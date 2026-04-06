@@ -132,7 +132,7 @@
     </div>
 
     <!-- Hero Section (Parallax) -->
-    <header class="parallax-hero pt-20 pb-16 px-6 text-center border-b border-white/5 relative z-10" id="heroSection">
+    <header class="parallax-hero pt-20 pb-16 px-4 md:px-6 text-center border-b border-white/5 relative z-10" id="heroSection">
         <div class="max-w-5xl mx-auto animate-fade-in">
             <div class="flex justify-center mb-8">
                 <div class="relative group">
@@ -140,14 +140,14 @@
                     <img src="https://i.ibb.co/gM83nXf3/Gemini-Generated-Image-c8zfwsc8zfwsc8zf.png" 
                          alt="Logo Principal" 
                          id="heroImageEl"
-                         class="w-40 h-40 rounded-full object-cover border-[3px] border-amber-500 shadow-2xl relative z-10 transition-transform duration-700 hover:scale-105"
+                         class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-[3px] border-amber-500 shadow-2xl relative z-10 transition-transform duration-700 hover:scale-105"
                          crossorigin="anonymous">
                 </div>
             </div>
-            <h1 id="heroMainTitle" class="text-5xl md:text-7xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 mb-4 tracking-tight drop-shadow-sm">
+            <h1 id="heroMainTitle" class="text-4xl md:text-7xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 mb-4 tracking-tight drop-shadow-sm px-2">
                 Rolando Live Music
             </h1>
-            <div id="heroSubTitle" class="text-neutral-300 tracking-[0.2em] uppercase text-xs font-medium mb-8">
+            <div id="heroSubTitle" class="text-neutral-300 tracking-[0.2em] uppercase text-[10px] md:text-xs font-medium mb-8 px-4">
                 Bodas • Cenas • Aniversarios
             </div>
             
@@ -156,18 +156,18 @@
     </header>
 
     <!-- App Container -->
-    <div id="app" class="max-w-5xl mx-auto px-6 py-16">
+    <div id="app" class="max-w-5xl mx-auto px-4 md:px-6 py-10 md:py-16">
         
         <!-- Search & Filters -->
-        <div class="flex flex-col md:flex-row gap-4 mb-12 sticky top-4 z-30 bg-zinc-950/80 backdrop-blur-xl p-4 rounded-2xl border border-white/10 shadow-2xl animate-fade-in delay-100">
+        <div class="flex flex-col md:flex-row gap-4 mb-10 md:mb-12 sticky top-4 z-30 bg-zinc-950/80 backdrop-blur-xl p-3 md:p-4 rounded-2xl border border-white/10 shadow-2xl animate-fade-in delay-100">
             <div class="relative flex-1">
-                <i data-lucide="search" class="absolute left-5 top-1/2 -translate-y-1/2 text-neutral-500 w-5 h-5"></i>
+                <i data-lucide="search" class="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-neutral-500 w-5 h-5"></i>
                 <input type="text" id="searchInput" placeholder="Busca tu pieza ideal..." 
-                       class="w-full bg-zinc-900/50 border border-white/10 rounded-xl py-3.5 pl-14 pr-4 focus:outline-none focus:ring-1 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all text-neutral-200">
+                       class="w-full bg-zinc-900/50 border border-white/10 rounded-xl py-3 md:py-3.5 pl-12 md:pl-14 pr-4 focus:outline-none focus:ring-1 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all text-neutral-200 text-sm md:text-base">
             </div>
-            <div class="flex items-center gap-2 bg-zinc-900/50 border border-white/10 rounded-xl px-4 min-w-[240px]">
-                <i data-lucide="music" class="w-4 h-4 text-amber-500"></i>
-                <select id="genreFilter" class="bg-transparent w-full py-3.5 focus:outline-none text-neutral-200 transition-all cursor-pointer text-sm">
+            <div class="flex items-center gap-2 bg-zinc-900/50 border border-white/10 rounded-xl px-4 md:min-w-[240px]">
+                <i data-lucide="music" class="w-4 h-4 text-amber-500 hidden md:block"></i>
+                <select id="genreFilter" class="bg-transparent w-full py-3 md:py-3.5 focus:outline-none text-neutral-200 transition-all cursor-pointer text-sm">
                     <option value="Todos">Filtrar por género musical...</option>
                 </select>
             </div>
@@ -180,20 +180,20 @@
         </div>
 
         <!-- Song Grid -->
-        <div id="songGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-16 animate-fade-in delay-200 hidden">
+        <div id="songGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 mb-16 animate-fade-in delay-200 hidden">
             <!-- Dynamically populated -->
         </div>
 
         <!-- SELECTION SECTION (For Screenshot & DragDrop) -->
-        <section id="selectionSection" class="hidden mt-12 mb-16 animate-fade-in">
+        <section id="selectionSection" class="hidden mt-8 md:mt-12 mb-16 animate-fade-in">
             <!-- Detalles del Evento -->
-            <div class="mb-8 border-b border-white/10 pb-8 bg-zinc-900/20 p-6 rounded-2xl">
-                <h2 class="text-2xl font-serif text-amber-500 mb-4 flex items-center gap-2"><i data-lucide="calendar-heart" class="w-5 h-5"></i> Detalles del Evento</h2>
+            <div class="mb-8 border-b border-white/10 pb-8 bg-zinc-900/20 p-5 md:p-6 rounded-2xl">
+                <h2 class="text-xl md:text-2xl font-serif text-amber-500 mb-4 flex items-center gap-2"><i data-lucide="calendar-heart" class="w-5 h-5"></i> Detalles del Evento</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                    <input type="text" id="clientName" placeholder="Nombre completo" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none transition-colors">
-                    <input type="tel" id="clientPhone" placeholder="Teléfono" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none transition-colors">
+                    <input type="text" id="clientName" placeholder="Nombre completo" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none transition-colors">
+                    <input type="tel" id="clientPhone" placeholder="Teléfono" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none transition-colors">
                     
-                    <select id="clientEventType" class="bg-zinc-900 border-2 border-amber-500/80 rounded-xl px-4 py-3 text-sm focus:border-amber-500 outline-none transition-colors text-neutral-200 font-semibold shadow-[0_0_15px_rgba(212,175,55,0.15)]">
+                    <select id="clientEventType" class="w-full bg-zinc-900 border-2 border-amber-500/80 rounded-xl px-4 py-3 text-sm focus:border-amber-500 outline-none transition-colors text-neutral-200 font-semibold shadow-[0_0_15px_rgba(212,175,55,0.15)]">
                         <option value="" disabled selected>Tipo de Evento (Obligatorio) *</option>
                         <option value="Boda">Boda</option>
                         <option value="XV Años">XV Años</option>
@@ -206,77 +206,78 @@
                         <option value="Otro">Otro</option>
                     </select>
 
-                    <input type="date" id="clientDate" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none text-neutral-400 transition-colors">
+                    <input type="date" id="clientDate" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none text-neutral-400 transition-colors">
                 </div>
                 <textarea id="clientComments" rows="2" placeholder="Comentarios o indicaciones generales para Rolando..." class="w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none resize-none transition-colors"></textarea>
             </div>
 
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 gap-4">
                 <div>
-                    <h2 class="text-3xl font-serif text-amber-500 mb-1">Tu Repertorio</h2>
-                    <p class="text-neutral-400 text-sm mb-2">Arrastra las canciones para cambiar el orden exacto y añade notas o instrumentos si lo deseas.</p>
+                    <h2 class="text-2xl md:text-3xl font-serif text-amber-500 mb-1">Tu Repertorio</h2>
+                    <p class="text-neutral-400 text-xs md:text-sm mb-3">Arrastra las canciones para cambiar el orden exacto y añade notas o instrumentos si lo deseas.</p>
                     <div class="inline-flex items-center gap-2 bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3 py-1.5 rounded-lg text-sm font-medium">
                         <i data-lucide="timer" class="w-4 h-4"></i>
                         <span id="timeEstimator">0 min aprox de música</span>
                     </div>
                 </div>
-                <div class="flex gap-3">
-                    <button onclick="window.downloadSelection()" id="downloadBtn" class="text-xs bg-amber-600 hover:bg-amber-500 text-white transition-colors px-4 py-2 rounded-lg font-bold flex items-center gap-2 shadow-lg shadow-amber-900/20">
+                <div class="flex w-full sm:w-auto gap-3">
+                    <button onclick="window.downloadSelection()" id="downloadBtn" class="flex-1 sm:flex-none text-xs bg-amber-600 hover:bg-amber-500 text-white transition-colors px-4 py-3 sm:py-2 rounded-xl sm:rounded-lg font-bold flex items-center justify-center gap-2 shadow-lg shadow-amber-900/20">
                         <i data-lucide="download" class="w-4 h-4"></i> Descargar Mi listado
                     </button>
-                    <button onclick="window.clearSelection()" class="text-xs text-red-400/80 hover:text-red-400 transition-colors bg-red-400/10 px-4 py-2 rounded-lg">Vaciar lista</button>
+                    <button onclick="window.clearSelection()" class="text-xs text-red-400/80 hover:text-red-400 transition-colors bg-red-400/10 px-4 py-3 sm:py-2 rounded-xl sm:rounded-lg flex justify-center items-center">Vaciar lista</button>
                 </div>
             </div>
             
-            <div id="captureArea" class="p-8 rounded-3xl screenshot-area shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-neutral-200 relative bg-white">
-                <div class="flex items-center justify-between border-b border-neutral-200 pb-6 mb-6">
-                    <div class="flex items-center gap-4">
-                        <img src="" id="captureLogo" class="w-14 h-14 rounded-full border-2 border-amber-600 shadow-md object-cover" crossorigin="anonymous">
+            <!-- CONTENEDOR DE CAPTURA -->
+            <div id="captureArea" class="p-5 md:p-8 rounded-2xl md:rounded-3xl screenshot-area shadow-xl border border-neutral-200 relative bg-white overflow-hidden">
+                <div class="flex flex-row items-center justify-between border-b border-neutral-200 pb-4 md:pb-6 mb-4 md:mb-6">
+                    <div class="flex items-center gap-3 md:gap-4">
+                        <img src="" id="captureLogo" class="w-10 h-10 md:w-14 md:h-14 rounded-full border-2 border-amber-600 shadow-md object-cover" crossorigin="anonymous">
                         <div>
-                            <p id="captureMainTitle" class="font-serif font-bold text-2xl leading-none text-neutral-900">Rolando Live Music</p>
-                            <p class="text-xs text-amber-600 uppercase tracking-widest font-semibold mt-1">Selección de Canciones/Piezas</p>
+                            <p id="captureMainTitle" class="font-serif font-bold text-xl md:text-2xl leading-none text-neutral-900">Rolando Live Music</p>
+                            <p class="text-[10px] md:text-xs text-amber-600 uppercase tracking-widest font-semibold mt-1">Selección de Canciones/Piezas</p>
                         </div>
                     </div>
-                    <div class="text-right hidden sm:block">
-                        <p id="captureTime" class="text-xs font-bold text-neutral-400 uppercase tracking-wider"></p>
-                        <p id="captureSongsCount" class="text-neutral-900 font-serif font-bold text-xl"></p>
+                    <div class="text-right">
+                        <p id="captureTime" class="text-[10px] md:text-xs font-bold text-neutral-400 uppercase tracking-wider"></p>
+                        <p id="captureSongsCount" class="text-neutral-900 font-serif font-bold text-lg md:text-xl"></p>
                     </div>
                 </div>
                 
                 <!-- Client Info Print Area -->
-                <div id="captureClientInfo" class="hidden mb-6 bg-neutral-50 border border-neutral-200 p-4 rounded-xl flex flex-col gap-2 text-sm text-neutral-700">
+                <div id="captureClientInfo" class="hidden mb-6 bg-neutral-50 border border-neutral-200 p-4 rounded-xl flex flex-col gap-2 text-xs md:text-sm text-neutral-700">
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full border-b border-neutral-200 pb-2 mb-1">
-                        <div><span class="font-bold text-neutral-900 block text-xs uppercase tracking-wider text-neutral-400">Cliente</span> <span id="printName" class="font-medium"></span></div>
-                        <div><span class="font-bold text-neutral-900 block text-xs uppercase tracking-wider text-neutral-400">Teléfono</span> <span id="printPhone" class="font-medium"></span></div>
-                        <div><span class="font-bold text-neutral-900 block text-xs uppercase tracking-wider text-neutral-400">Evento</span> <span id="printEventType" class="font-medium text-amber-600"></span></div>
-                        <div><span class="font-bold text-neutral-900 block text-xs uppercase tracking-wider text-neutral-400">Fecha</span> <span id="printDate" class="font-medium"></span></div>
+                        <div><span class="font-bold text-neutral-900 block text-[10px] md:text-xs uppercase tracking-wider text-neutral-400">Cliente</span> <span id="printName" class="font-medium truncate block"></span></div>
+                        <div><span class="font-bold text-neutral-900 block text-[10px] md:text-xs uppercase tracking-wider text-neutral-400">Teléfono</span> <span id="printPhone" class="font-medium truncate block"></span></div>
+                        <div><span class="font-bold text-neutral-900 block text-[10px] md:text-xs uppercase tracking-wider text-neutral-400">Evento</span> <span id="printEventType" class="font-medium text-amber-600 truncate block"></span></div>
+                        <div><span class="font-bold text-neutral-900 block text-[10px] md:text-xs uppercase tracking-wider text-neutral-400">Fecha</span> <span id="printDate" class="font-medium truncate block"></span></div>
                     </div>
                     <div id="printCommentsBox" class="hidden pt-1">
-                        <span class="font-bold text-neutral-900 text-xs uppercase tracking-wider text-neutral-400 block mb-1">Indicaciones</span> <span id="printComments" class="italic text-neutral-600"></span>
+                        <span class="font-bold text-neutral-900 text-[10px] md:text-xs uppercase tracking-wider text-neutral-400 block mb-1">Indicaciones</span> <span id="printComments" class="italic text-neutral-600"></span>
                     </div>
                 </div>
 
-                <ul id="selectedSongsList" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-base text-neutral-800">
+                <ul id="selectedSongsList" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm md:text-base text-neutral-800">
                     <!-- Selected songs appear here with Drag & Drop -->
                 </ul>
                 
-                <div class="mt-10 pt-6 border-t border-neutral-200 text-center">
-                    <p class="text-neutral-500 italic font-serif text-sm">Descarga esta imagen y envíamela por WhatsApp para confirmar tu selección.</p>
+                <div class="mt-8 md:mt-10 pt-6 border-t border-neutral-200 text-center">
+                    <p class="text-neutral-500 italic font-serif text-xs md:text-sm px-2">Descarga esta imagen y envíamela por WhatsApp para confirmar tu selección.</p>
                 </div>
             </div>
         </section>
 
         <!-- Custom Song Input Section -->
-        <div class="mb-12 bg-zinc-900/30 border border-amber-500/20 p-6 rounded-2xl animate-fade-in delay-300">
+        <div class="mb-12 bg-zinc-900/30 border border-amber-500/20 p-5 md:p-6 rounded-2xl animate-fade-in delay-300">
             <div class="flex items-center gap-3 mb-3">
                 <i data-lucide="music" class="text-amber-500 w-5 h-5"></i>
-                <h3 class="font-serif text-xl text-amber-50">¿No encuentras una canción especial?</h3>
+                <h3 class="font-serif text-lg md:text-xl text-amber-50">¿No encuentras una canción especial?</h3>
             </div>
-            <p class="text-sm text-neutral-400 mb-4">Escribe el nombre y artista de la cancion/pieza y la revisaremos con gusto.</p>
-            <div class="flex gap-3">
+            <p class="text-xs md:text-sm text-neutral-400 mb-4">Escribe el nombre y artista de la cancion/pieza y la revisaremos con gusto.</p>
+            <div class="flex flex-col sm:flex-row gap-3">
                 <input type="text" id="customSongInput" placeholder="Ej. A Thousand Years - Christina Perri" 
-                       class="flex-1 bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none transition-colors">
-                <button onclick="window.addCustomSong()" class="bg-amber-600 hover:bg-amber-500 text-white px-6 py-3 rounded-xl text-sm font-semibold transition-colors whitespace-nowrap shadow-lg shadow-amber-900/20">
+                       class="flex-1 w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none transition-colors">
+                <button onclick="window.addCustomSong()" class="w-full sm:w-auto bg-amber-600 hover:bg-amber-500 text-white px-6 py-3 rounded-xl text-sm font-semibold transition-colors shadow-lg shadow-amber-900/20">
                     Añadir Petición
                 </button>
             </div>
@@ -284,10 +285,10 @@
     </div>
 
     <!-- Footer -->
-    <footer class="py-16 px-6 text-center border-t border-white/5 bg-black/50 relative">
-        <p id="footerMainTitle" class="font-serif text-xl text-amber-500 mb-4">Rolando Live Music</p>
+    <footer class="py-12 md:py-16 px-4 md:px-6 text-center border-t border-white/5 bg-black/50 relative">
+        <p id="footerMainTitle" class="font-serif text-xl md:text-2xl text-amber-500 mb-4">Rolando Live Music</p>
         <div id="footerSocials" class="flex justify-center gap-6 mb-8 text-neutral-400"></div>
-        <p class="text-neutral-600 text-xs">Monterrey, N.L. • Elegancia y sofisticación musical.</p>
+        <p class="text-neutral-600 text-[10px] md:text-xs">Monterrey, N.L. • Elegancia y sofisticación musical.</p>
         
         <button onclick="window.openAdmin()" class="absolute bottom-6 left-6 opacity-0 hover:opacity-100 focus:opacity-100 transition-opacity p-2">
             <i data-lucide="lock" class="w-4 h-4 text-neutral-700"></i>
@@ -298,23 +299,23 @@
     <div id="adminModal" class="admin-modal fixed inset-0 z-50 items-center justify-center p-4 overflow-y-auto">
         <div class="bg-zinc-950 border border-white/10 w-full max-w-5xl min-h-[90vh] max-h-[95vh] rounded-3xl overflow-hidden flex flex-col shadow-2xl my-auto">
             
-            <div class="p-6 border-b border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center bg-zinc-900/50 sticky top-0 z-20 gap-4">
-                <h2 class="text-xl font-bold flex items-center gap-3 text-amber-500 font-serif whitespace-nowrap">
+            <div class="p-4 md:p-6 border-b border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center bg-zinc-900/50 sticky top-0 z-20 gap-4">
+                <h2 class="text-lg md:text-xl font-bold flex items-center gap-3 text-amber-500 font-serif whitespace-nowrap">
                     <i data-lucide="shield" class="w-5 h-5"></i> Panel Admin
                 </h2>
                 
                 <!-- Tab Navigation -->
                 <div id="adminTabsNav" class="hidden flex-1 flex gap-2 overflow-x-auto w-full md:w-auto custom-scrollbar pb-2 md:pb-0">
-                    <button class="tab-btn active px-4 py-2 text-sm font-medium text-amber-500 border-b-2 border-amber-500 whitespace-nowrap transition-colors" onclick="window.switchAdminTab('tabSettings', this)"><i data-lucide="settings" class="w-4 h-4 inline-block mr-1"></i> Configuración</button>
-                    <button class="tab-btn px-4 py-2 text-sm font-medium text-neutral-400 border-b-2 border-transparent hover:text-neutral-200 whitespace-nowrap transition-colors" onclick="window.switchAdminTab('tabCatalog', this)"><i data-lucide="music" class="w-4 h-4 inline-block mr-1"></i> Catálogo</button>
-                    <button class="tab-btn px-4 py-2 text-sm font-medium text-neutral-400 border-b-2 border-transparent hover:text-neutral-200 whitespace-nowrap transition-colors" onclick="window.switchAdminTab('tabRepertoires', this)"><i data-lucide="folder-heart" class="w-4 h-4 inline-block mr-1"></i> Repertorios</button>
-                    <button class="tab-btn px-4 py-2 text-sm font-medium text-neutral-400 border-b-2 border-transparent hover:text-neutral-200 whitespace-nowrap transition-colors" onclick="window.switchAdminTab('tabStats', this)"><i data-lucide="bar-chart-3" class="w-4 h-4 inline-block mr-1"></i> Estadísticas</button>
+                    <button class="tab-btn active px-3 py-2 text-xs md:text-sm font-medium text-amber-500 border-b-2 border-amber-500 whitespace-nowrap transition-colors" onclick="window.switchAdminTab('tabSettings', this)"><i data-lucide="settings" class="w-4 h-4 inline-block mr-1"></i> Configuración</button>
+                    <button class="tab-btn px-3 py-2 text-xs md:text-sm font-medium text-neutral-400 border-b-2 border-transparent hover:text-neutral-200 whitespace-nowrap transition-colors" onclick="window.switchAdminTab('tabCatalog', this)"><i data-lucide="music" class="w-4 h-4 inline-block mr-1"></i> Catálogo</button>
+                    <button class="tab-btn px-3 py-2 text-xs md:text-sm font-medium text-neutral-400 border-b-2 border-transparent hover:text-neutral-200 whitespace-nowrap transition-colors" onclick="window.switchAdminTab('tabRepertoires', this)"><i data-lucide="folder-heart" class="w-4 h-4 inline-block mr-1"></i> Repertorios</button>
+                    <button class="tab-btn px-3 py-2 text-xs md:text-sm font-medium text-neutral-400 border-b-2 border-transparent hover:text-neutral-200 whitespace-nowrap transition-colors" onclick="window.switchAdminTab('tabStats', this)"><i data-lucide="bar-chart-3" class="w-4 h-4 inline-block mr-1"></i> Estadísticas</button>
                 </div>
 
-                <button onclick="window.closeAdmin()" class="text-neutral-500 hover:text-white transition-colors bg-white/5 p-2 rounded-full absolute top-6 right-6 md:relative md:top-auto md:right-auto"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="window.closeAdmin()" class="text-neutral-500 hover:text-white transition-colors bg-white/5 p-2 rounded-full absolute top-4 right-4 md:relative md:top-auto md:right-auto"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             
-            <div id="adminContent" class="p-6 overflow-y-auto flex-1 custom-scrollbar">
+            <div id="adminContent" class="p-4 md:p-6 overflow-y-auto flex-1 custom-scrollbar">
                 <!-- Auth Screen -->
                 <div id="adminAuth" class="space-y-6 py-20 text-center">
                     <div class="inline-block p-4 rounded-full bg-amber-500/10 mb-2">
@@ -322,8 +323,8 @@
                     </div>
                     <p class="text-neutral-400 mb-4">Introduce tus credenciales</p>
                     <div class="space-y-3 max-w-xs mx-auto">
-                        <input type="email" id="adminEmail" placeholder="Correo electrónico" value="Correo" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 w-full text-center text-amber-500 text-sm focus:border-amber-500 outline-none transition-colors block">
-                        <input type="password" id="adminPass" placeholder="Contraseña" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 w-full text-center text-amber-500 font-mono text-xl focus:border-amber-500 outline-none transition-colors block">
+                        <input type="email" id="adminEmail" placeholder="Correo electrónico" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 w-full text-center text-amber-500 text-sm focus:border-amber-500 outline-none transition-colors block" value="">
+                        <input type="password" id="adminPass" placeholder="Contraseña" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 w-full text-center text-amber-500 font-mono text-xl focus:border-amber-500 outline-none transition-colors block" value="">
                     </div>
                     <div id="loginError" class="text-red-400 text-sm hidden">Credenciales incorrectas. Intenta de nuevo.</div>
                     <button onclick="window.checkAdminPass()" class="bg-amber-600 hover:bg-amber-500 text-white px-10 py-3 rounded-xl transition-colors font-medium mt-4">Acceder</button>
@@ -334,7 +335,7 @@
                     
                     <!-- TAB 1: Settings, Genres & Instruments -->
                     <div id="tabSettings" class="admin-tab active space-y-8">
-                        <section class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
+                        <section class="bg-zinc-900/30 p-4 md:p-6 rounded-2xl border border-white/5">
                             <h3 class="text-sm font-bold uppercase text-amber-500 mb-6 tracking-widest">Configuración de Marca y Contacto</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="md:col-span-2">
@@ -406,7 +407,7 @@
                             <button onclick="window.saveAdminSettings(event)" class="mt-5 w-full bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl p-3 text-sm font-semibold transition-colors border border-white/5">Guardar Configuración y Colores</button>
                         </section>
 
-                        <section class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
+                        <section class="bg-zinc-900/30 p-4 md:p-6 rounded-2xl border border-white/5">
                             <h3 class="text-sm font-bold uppercase text-amber-500 mb-4 tracking-widest">Gestión de Géneros Musicales</h3>
                             <p class="text-xs text-neutral-500 mb-4">Añade o elimina los géneros musicales de tu catálogo.</p>
                             <div class="flex gap-2 mb-4">
@@ -418,7 +419,7 @@
                             </div>
                         </section>
 
-                        <section class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
+                        <section class="bg-zinc-900/30 p-4 md:p-6 rounded-2xl border border-white/5">
                             <h3 class="text-sm font-bold uppercase text-amber-500 mb-4 tracking-widest">Gestión de Instrumentos</h3>
                             <p class="text-xs text-neutral-500 mb-4">Añade o elimina los instrumentos disponibles para que el cliente seleccione en su repertorio.</p>
                             <div class="flex gap-2 mb-4">
@@ -435,7 +436,7 @@
                     <div id="tabCatalog" class="admin-tab space-y-8">
                         <section id="songFormSection">
                             <h3 class="text-sm font-bold uppercase text-amber-500 mb-4 tracking-widest" id="songFormTitle">Añadir Pieza al Catálogo</h3>
-                            <div class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
+                            <div class="bg-zinc-900/30 p-4 md:p-6 rounded-2xl border border-white/5">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <input type="text" id="newTitle" placeholder="Título de la canción" class="bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm text-neutral-200 outline-none focus:border-amber-500">
                                     <input type="text" id="newRef" placeholder="Referencia (Artista/Película)" class="bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm text-neutral-200 outline-none focus:border-amber-500">
@@ -457,16 +458,16 @@
                         <section>
                             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-4 gap-4">
                                 <h3 class="text-sm font-bold uppercase text-amber-500 tracking-widest">Catálogo Actual</h3>
-                                <div class="flex flex-wrap gap-2">
-                                    <div class="relative">
+                                <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                                    <div class="relative flex-1 md:flex-none">
                                         <i data-lucide="search" class="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-neutral-500"></i>
-                                        <input type="text" id="adminSearch" placeholder="Buscar canción..." class="bg-zinc-900 border border-white/10 text-xs rounded pl-7 pr-2 py-1.5 focus:outline-none focus:border-amber-500 text-neutral-200" oninput="window.renderAdminList()">
+                                        <input type="text" id="adminSearch" placeholder="Buscar canción..." class="w-full bg-zinc-900 border border-white/10 text-xs rounded pl-7 pr-2 py-1.5 focus:outline-none focus:border-amber-500 text-neutral-200" oninput="window.renderAdminList()">
                                     </div>
-                                    <button onclick="document.getElementById('csvFileInput').click()" class="text-xs bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded text-neutral-300 border border-white/10 transition-colors flex items-center gap-1">
+                                    <button onclick="document.getElementById('csvFileInput').click()" class="text-xs bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded text-neutral-300 border border-white/10 transition-colors flex items-center justify-center gap-1 flex-1 md:flex-none">
                                         <i data-lucide="upload" class="w-3 h-3"></i> Importar CSV
                                     </button>
                                     <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="window.importCSV(event)">
-                                    <button onclick="window.exportCSV()" class="text-xs bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded text-neutral-300 border border-white/10 transition-colors flex items-center gap-1">
+                                    <button onclick="window.exportCSV()" class="text-xs bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded text-neutral-300 border border-white/10 transition-colors flex items-center justify-center gap-1 flex-1 md:flex-none">
                                         <i data-lucide="download" class="w-3 h-3"></i> Exportar CSV
                                     </button>
                                 </div>
@@ -490,21 +491,21 @@
                         
                         <!-- List of Repertoires View -->
                         <section id="repertoiresListSection">
-                            <div class="flex justify-between items-end mb-4">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-4 gap-4">
                                 <h3 class="text-sm font-bold uppercase text-amber-500 tracking-widest">Repertorios Solicitados por Clientes</h3>
-                                <button onclick="window.exportRepertoiresCSV()" class="text-xs bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded text-neutral-300 border border-white/10 transition-colors flex items-center gap-1">
+                                <button onclick="window.exportRepertoiresCSV()" class="w-full md:w-auto text-xs bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded text-neutral-300 border border-white/10 transition-colors flex items-center justify-center gap-1">
                                     <i data-lucide="download" class="w-3 h-3"></i> Exportar CRM a CSV
                                 </button>
                             </div>
                             
-                            <div class="grid grid-cols-12 gap-2 px-4 py-2 text-[10px] uppercase font-bold text-neutral-500 border-b border-white/10 mb-2">
+                            <div class="grid grid-cols-12 gap-2 px-4 py-2 text-[10px] uppercase font-bold text-neutral-500 border-b border-white/10 mb-2 hidden md:grid">
                                 <div class="col-span-3">Cliente & Contacto</div>
                                 <div class="col-span-3">Evento & Fecha</div>
                                 <div class="col-span-3">Selección</div>
                                 <div class="col-span-3 text-right">Acciones</div>
                             </div>
 
-                            <div id="repertoiresAdminList" class="space-y-1 border border-white/5 p-2 rounded-xl bg-zinc-900/10 min-h-[300px] max-h-[600px] overflow-y-auto custom-scrollbar">
+                            <div id="repertoiresAdminList" class="space-y-2 md:space-y-1 border border-white/5 p-2 rounded-xl bg-zinc-900/10 min-h-[300px] max-h-[600px] overflow-y-auto custom-scrollbar">
                                 <!-- List populated via JS -->
                             </div>
                         </section>
@@ -522,7 +523,7 @@
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                 <!-- Edit Form -->
                                 <div>
-                                    <div class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5 mb-6">
+                                    <div class="bg-zinc-900/30 p-4 md:p-6 rounded-2xl border border-white/5 mb-6">
                                         <h4 class="text-sm font-bold text-neutral-300 mb-4">Datos del Cliente</h4>
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
                                             <input type="text" id="adminRepName" placeholder="Nombre completo" class="bg-zinc-900 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-amber-500/50 outline-none" onchange="window.updateAdminRepPreview()">
@@ -544,15 +545,15 @@
                                         <textarea id="adminRepComments" rows="2" placeholder="Comentarios generales..." class="w-full bg-zinc-900 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-amber-500/50 outline-none resize-none" onchange="window.updateAdminRepPreview()"></textarea>
                                     </div>
 
-                                    <div class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
+                                    <div class="bg-zinc-900/30 p-4 md:p-6 rounded-2xl border border-white/5">
                                         <div class="flex justify-between items-center mb-4">
                                             <h4 class="text-sm font-bold text-neutral-300">Piezas Elegidas</h4>
                                             <span class="text-xs bg-amber-500/10 text-amber-500 px-2 py-1 rounded font-mono" id="adminRepCount">0 piezas</span>
                                         </div>
                                         
-                                        <div class="flex gap-2 mb-4">
-                                            <input type="text" id="adminRepCustomSong" placeholder="Añadir canción (Título - Artista)" class="flex-1 bg-zinc-900 border border-white/10 rounded-lg px-3 py-2 text-xs focus:border-amber-500/50 outline-none">
-                                            <button onclick="window.addAdminRepSong()" class="bg-zinc-800 hover:bg-zinc-700 text-white px-3 rounded-lg transition-colors"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                                        <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                                            <input type="text" id="adminRepCustomSong" placeholder="Añadir canción (Título - Artista)" class="flex-1 w-full bg-zinc-900 border border-white/10 rounded-lg px-3 py-2 text-xs focus:border-amber-500/50 outline-none">
+                                            <button onclick="window.addAdminRepSong()" class="w-full sm:w-auto bg-zinc-800 hover:bg-zinc-700 text-white px-3 py-2 sm:py-0 rounded-lg transition-colors flex justify-center items-center"><i data-lucide="plus" class="w-4 h-4"></i></button>
                                         </div>
 
                                         <ul id="adminRepSongsList" class="space-y-2 mb-6 max-h-80 overflow-y-auto custom-scrollbar pr-2">
@@ -563,7 +564,7 @@
 
                                 <!-- Image Preview & Download -->
                                 <div>
-                                    <div class="flex gap-2 mb-4">
+                                    <div class="flex flex-col sm:flex-row gap-2 mb-4">
                                         <button onclick="window.saveAdminRepertoire()" id="adminRepSaveBtn" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white transition-colors px-4 py-3 rounded-xl font-bold flex justify-center items-center gap-2 border border-white/10">
                                             <i data-lucide="save" class="w-4 h-4"></i> Guardar Cambios en BD
                                         </button>
@@ -572,9 +573,9 @@
                                         </button>
                                     </div>
 
-                                    <p class="text-xs text-neutral-500 mb-2">Vista previa de la imagen:</p>
-                                    <div class="w-full overflow-hidden rounded-xl border border-white/10">
-                                        <div style="transform: scale(0.65); transform-origin: top left; width: 153.84%;" class="bg-white pb-8">
+                                    <p class="text-xs text-neutral-500 mb-2">Vista previa de la imagen (Modo Escritorio):</p>
+                                    <div class="w-full overflow-hidden rounded-xl border border-white/10 relative" style="height: 500px;">
+                                        <div style="transform: scale(0.65); transform-origin: top left; width: 153.84%; position: absolute; top:0; left:0;" class="bg-white pb-8">
                                             <div id="adminCaptureArea" class="p-8 screenshot-area relative bg-white">
                                                 <div class="flex items-center justify-between border-b border-neutral-200 pb-6 mb-6">
                                                     <div class="flex items-center gap-4">
@@ -624,8 +625,8 @@
                         <div class="grid grid-cols-1 gap-8">
                             
                             <!-- Piezas por Género -->
-                            <div class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5 relative">
-                                <div class="flex justify-between items-center mb-6">
+                            <div class="bg-zinc-900/30 p-4 md:p-6 rounded-2xl border border-white/5 relative">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
                                     <h4 class="text-sm font-bold text-neutral-300">Canciones disponibles por Género Musical</h4>
                                     <div class="flex gap-2">
                                         <button onclick="window.downloadChartImage('chartGenres', 'Grafica_Generos')" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-amber-500 px-3 py-1.5 rounded transition-colors flex items-center gap-1 border border-white/5">
@@ -633,43 +634,43 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="relative w-full h-[400px]">
+                                <div class="relative w-full h-[300px] md:h-[400px]">
                                     <canvas id="chartGenres"></canvas>
                                 </div>
                             </div>
                             
                             <!-- Top Clics -->
-                            <div class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5 relative">
+                            <div class="bg-zinc-900/30 p-4 md:p-6 rounded-2xl border border-white/5 relative">
                                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                                     <h4 class="text-sm font-bold text-neutral-300">Piezas Más Solicitadas</h4>
-                                    <div class="flex flex-wrap gap-2">
-                                        <button onclick="window.filterTopClicks(5)" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">Top 5</button>
-                                        <button onclick="window.filterTopClicks(10)" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">Top 10</button>
-                                        <button onclick="window.filterTopClicks(20)" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">Top 20</button>
-                                        <button onclick="window.downloadChartImage('chartClicks', 'Grafica_TopCanciones')" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-amber-500 px-3 py-1.5 rounded transition-colors flex items-center gap-1 border border-white/5 ml-auto md:ml-2">
+                                    <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                                        <button onclick="window.filterTopClicks(5)" class="flex-1 md:flex-none text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">Top 5</button>
+                                        <button onclick="window.filterTopClicks(10)" class="flex-1 md:flex-none text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">Top 10</button>
+                                        <button onclick="window.filterTopClicks(20)" class="flex-1 md:flex-none text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">Top 20</button>
+                                        <button onclick="window.downloadChartImage('chartClicks', 'Grafica_TopCanciones')" class="w-full md:w-auto mt-2 md:mt-0 text-xs bg-zinc-800 hover:bg-zinc-700 text-amber-500 px-3 py-1.5 rounded transition-colors flex justify-center items-center gap-1 border border-white/5">
                                             <i data-lucide="image-down" class="w-3 h-3"></i> Descargar
                                         </button>
                                     </div>
                                 </div>
-                                <div class="relative w-full h-[400px]">
+                                <div class="relative w-full h-[300px] md:h-[400px]">
                                     <canvas id="chartClicks"></canvas>
                                 </div>
                             </div>
                             
                             <!-- Repertorios por Fecha (Line Chart) -->
-                            <div class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5 relative">
+                            <div class="bg-zinc-900/30 p-4 md:p-6 rounded-2xl border border-white/5 relative">
                                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                                     <h4 class="text-sm font-bold text-neutral-300">Repertorios Generados (Histórico)</h4>
-                                    <div class="flex flex-wrap gap-2">
-                                        <button onclick="window.filterRepertoiresDays(7)" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">Últimos 7 días</button>
-                                        <button onclick="window.filterRepertoiresDays(30)" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">Últimos 30 días</button>
-                                        <button onclick="window.filterRepertoiresDays(0)" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">Todo</button>
-                                        <button onclick="window.downloadChartImage('chartRepertoires', 'Grafica_Repertorios')" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-amber-500 px-3 py-1.5 rounded transition-colors flex items-center gap-1 border border-white/5 ml-auto md:ml-2">
+                                    <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                                        <button onclick="window.filterRepertoiresDays(7)" class="flex-1 md:flex-none text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">7 días</button>
+                                        <button onclick="window.filterRepertoiresDays(30)" class="flex-1 md:flex-none text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">30 días</button>
+                                        <button onclick="window.filterRepertoiresDays(0)" class="flex-1 md:flex-none text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">Todo</button>
+                                        <button onclick="window.downloadChartImage('chartRepertoires', 'Grafica_Repertorios')" class="w-full md:w-auto mt-2 md:mt-0 text-xs bg-zinc-800 hover:bg-zinc-700 text-amber-500 px-3 py-1.5 rounded transition-colors flex justify-center items-center gap-1 border border-white/5">
                                             <i data-lucide="image-down" class="w-3 h-3"></i> Descargar
                                         </button>
                                     </div>
                                 </div>
-                                <div class="relative w-full h-[400px]">
+                                <div class="relative w-full h-[300px] md:h-[400px]">
                                     <canvas id="chartRepertoires"></canvas>
                                 </div>
                             </div>
@@ -810,14 +811,12 @@
                     else { setDoc(doc(db, "rlm_settings", "genres"), { list: defaultGenres }).catch(e => console.warn(e)); }
                     window.renderFilters();
                     
-                    // Seguridad: Solo dibujar si el panel admin está abierto y la función ya cargó
                     if(!document.getElementById('adminManager').classList.contains('hidden')) {
                         if(typeof window.renderGenresAdmin === 'function') window.renderGenresAdmin();
                         if(typeof window.renderGenreCheckboxes === 'function') window.renderGenreCheckboxes();
                     }
                 }, (error) => console.warn("Error cargando géneros:", error));
 
-                // Listen Instruments (Public)
                 onSnapshot(doc(db, "rlm_settings", "instruments"), (docSnap) => {
                     if (docSnap.exists() && docSnap.data().list) { window.activeInstruments = docSnap.data().list; } 
                     else { setDoc(doc(db, "rlm_settings", "instruments"), { list: defaultInstruments }).catch(e => console.warn(e)); }
@@ -826,7 +825,6 @@
                         if(typeof window.renderInstrumentsAdmin === 'function') window.renderInstrumentsAdmin();
                     }
                     
-                    // Refrescar vistas en caso de que estén abiertas
                     if(typeof window.updateSelectionView === 'function') window.updateSelectionView();
                     if(window.editingRepertoireId && typeof window.updateAdminRepPreview === 'function') window.updateAdminRepPreview();
                 }, (error) => console.warn("Error cargando instrumentos:", error));
@@ -1174,9 +1172,39 @@
                 container.style.display = 'none';
             });
 
+            // Save and apply Desktop Width layout for mobile capturing
+            const originalWidth = element.style.width;
+            const originalMaxWidth = element.style.maxWidth;
+
             document.fonts.ready.then(() => {
                 setTimeout(() => {
-                    html2canvas(element, { scale: 2, backgroundColor: "#ffffff", useCORS: true, logging: false }).then(canvas => {
+                    html2canvas(element, { 
+                        scale: 2, 
+                        backgroundColor: "#ffffff", 
+                        useCORS: true, 
+                        logging: false,
+                        windowWidth: 1024,
+                        onclone: (clonedDoc) => {
+                            const el = clonedDoc.getElementById('captureArea');
+                            if(el) {
+                                el.style.width = '1024px';
+                                el.style.maxWidth = '1024px';
+                            }
+                            const list = clonedDoc.getElementById('selectedSongsList');
+                            if(list) {
+                                list.classList.remove('grid-cols-1', 'md:grid-cols-2');
+                                list.classList.add('grid-cols-2');
+                            }
+                            const info = clonedDoc.getElementById('captureClientInfo');
+                            if(info) {
+                                const grid = info.firstElementChild;
+                                if(grid) {
+                                    grid.classList.remove('grid-cols-2', 'md:grid-cols-4');
+                                    grid.classList.add('grid-cols-4');
+                                }
+                            }
+                        }
+                    }).then(canvas => {
                         noCaptureElements.forEach(el => el.style.opacity = '1');
                         replacedElements.forEach(rn => { rn.input.style.display = ''; rn.div.remove(); });
                         inputNotes.forEach(inp => inp.style.display = '');
@@ -1222,10 +1250,8 @@
             const email = document.getElementById('adminEmail').value.trim();
             const pass = document.getElementById('adminPass').value;
             
-            // Autenticación segura con Firebase
             signInWithEmailAndPassword(auth, email, pass)
                 .then((userCredential) => {
-                    // Inicio de sesión exitoso
                     document.getElementById('adminAuth').classList.add('hidden');
                     document.getElementById('adminManager').classList.remove('hidden');
                     document.getElementById('adminTabsNav').classList.remove('hidden');
@@ -1239,7 +1265,6 @@
                     window.startAdminListeners();
                 })
                 .catch((error) => {
-                    // Contraseña incorrecta o error de red
                     console.error("Error de autenticación:", error.message);
                     document.getElementById('loginError').classList.remove('hidden');
                 });
@@ -1663,8 +1688,25 @@
             const originalText = btn.innerHTML;
             btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> ...`;
             
+            // Appply strict dimension constraints during clone for perfect admin exports
+            const originalWidth = element.style.width;
+            const originalMaxWidth = element.style.maxWidth;
+
             document.fonts.ready.then(() => {
-                html2canvas(element, { scale: 2, backgroundColor: "#ffffff", useCORS: true, logging: false }).then(canvas => {
+                html2canvas(element, { 
+                    scale: 2, 
+                    backgroundColor: "#ffffff", 
+                    useCORS: true, 
+                    logging: false,
+                    windowWidth: 1024,
+                    onclone: (clonedDoc) => {
+                        const el = clonedDoc.getElementById('adminCaptureArea');
+                        if(el) {
+                            el.style.width = '1024px';
+                            el.style.maxWidth = '1024px';
+                        }
+                    }
+                }).then(canvas => {
                     const cDate = document.getElementById('adminRepDate').value || 'Evento';
                     const link = document.createElement('a');
                     link.download = `Repertorio_Rolando_${cDate}.png`;
@@ -1745,7 +1787,7 @@
                         borderWidth: 1, borderColor: 'var(--c-bg)'
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: 'var(--c-text)', font: {size: 10} } }, customCanvasBackgroundColor: { color: 'var(--c-bg)' } } },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#e5e5e5', font: {size: 10} } }, customCanvasBackgroundColor: { color: '#09090b' } } },
                 plugins: [customCanvasBackgroundColor]
             });
 
@@ -1759,7 +1801,7 @@
                     labels: topSongs.map(s => s.titulo.length > 15 ? s.titulo.substring(0,15)+'...' : s.titulo),
                     datasets: [{ label: 'Veces Solicitada', data: topSongs.map(s => s.clicks || 0), backgroundColor: primaryColor, borderRadius: 4 }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: 'var(--c-text-muted)' } }, x: { ticks: { color: 'var(--c-text-muted)', maxRotation: 45, minRotation: 45 } } }, plugins: { legend: { display: false }, customCanvasBackgroundColor: { color: 'var(--c-bg)' } } },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: '#a1a1aa' } }, x: { ticks: { color: '#a1a1aa', maxRotation: 45, minRotation: 45 } } }, plugins: { legend: { display: false }, customCanvasBackgroundColor: { color: '#09090b' } } },
                 plugins: [customCanvasBackgroundColor]
             });
 
@@ -1784,7 +1826,7 @@
                     labels: sortedDates,
                     datasets: [{ label: 'Repertorios Generados', data: sortedDates.map(d => dateCounts[d]), borderColor: primaryColor, backgroundColor: primaryColor+'33', fill: true, tension: 0.3, pointBackgroundColor: '#ffffff' }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: 'var(--c-text-muted)', stepSize: 1 } }, x: { ticks: { color: 'var(--c-text-muted)' } } }, plugins: { legend: { display: false }, customCanvasBackgroundColor: { color: 'var(--c-bg)' } } },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: '#a1a1aa', stepSize: 1 } }, x: { ticks: { color: '#a1a1aa' } } }, plugins: { legend: { display: false }, customCanvasBackgroundColor: { color: '#09090b' } } },
                 plugins: [customCanvasBackgroundColor]
             });
         };
