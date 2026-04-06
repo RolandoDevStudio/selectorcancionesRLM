@@ -87,6 +87,19 @@
         <i data-lucide="message-circle" class="w-7 h-7"></i>
     </a>
 
+    <!-- Media Player Modal (Embeds) -->
+    <div id="mediaModal" class="fixed inset-0 z-[60] hidden bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300">
+        <div class="bg-zinc-900 border border-white/10 rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl animate-fade-in">
+            <div class="flex justify-between items-center p-4 border-b border-white/10">
+                <h3 class="text-amber-500 font-bold font-serif flex items-center gap-2"><i data-lucide="play-circle" class="w-5 h-5"></i> Reproductor</h3>
+                <button onclick="window.closeMediaModal()" class="text-neutral-400 hover:text-white transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="p-4 aspect-video relative w-full flex justify-center items-center bg-black">
+                <iframe id="mediaIframe" class="w-full h-full rounded-xl shadow-lg border-0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
     <!-- Hero Section (Parallax) -->
     <header class="parallax-hero pt-20 pb-16 px-6 text-center border-b border-white/5 relative z-10" id="heroSection">
         <div class="max-w-5xl mx-auto animate-fade-in">
@@ -124,9 +137,9 @@
                        class="w-full bg-zinc-900/50 border border-white/10 rounded-xl py-3.5 pl-14 pr-4 focus:outline-none focus:ring-1 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all text-neutral-200">
             </div>
             <div class="flex items-center gap-2 bg-zinc-900/50 border border-white/10 rounded-xl px-4 min-w-[240px]">
-                <i data-lucide="clock" class="w-4 h-4 text-amber-500"></i>
+                <i data-lucide="music" class="w-4 h-4 text-amber-500"></i>
                 <select id="genreFilter" class="bg-transparent w-full py-3.5 focus:outline-none text-neutral-200 transition-all cursor-pointer text-sm">
-                    <option value="Todos">Filtrar por momento...</option>
+                    <option value="Todos">Filtrar por género musical...</option>
                 </select>
             </div>
         </div>
@@ -151,8 +164,9 @@
                     <input type="text" id="clientName" placeholder="Nombre completo" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none transition-colors">
                     <input type="tel" id="clientPhone" placeholder="Teléfono" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none transition-colors">
                     
-                    <select id="clientEventType" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none transition-colors text-neutral-400">
-                        <option value="" disabled selected>Tipo de Evento</option>
+                    <!-- Mandatory Event Type Select with Highlight -->
+                    <select id="clientEventType" class="bg-zinc-900 border-2 border-amber-500/80 rounded-xl px-4 py-3 text-sm focus:border-amber-500 outline-none transition-colors text-neutral-200 font-semibold shadow-[0_0_15px_rgba(212,175,55,0.15)]">
+                        <option value="" disabled selected>Tipo de Evento (Obligatorio) *</option>
                         <option value="Boda">Boda</option>
                         <option value="XV Años">XV Años</option>
                         <option value="Propuesta de Matrimonio">Propuesta de Matrimonio</option>
@@ -192,7 +206,7 @@
                         <img src="" id="captureLogo" class="w-14 h-14 rounded-full border-2 border-amber-600 shadow-md object-cover" crossorigin="anonymous">
                         <div>
                             <p class="font-serif font-bold text-2xl leading-none text-neutral-900">Rolando Live Music</p>
-                            <p class="text-xs text-amber-600 uppercase tracking-widest font-semibold mt-1">Selección del Evento</p>
+                            <p class="text-xs text-amber-600 uppercase tracking-widest font-semibold mt-1">Selección de Canciones/Piezas</p>
                         </div>
                     </div>
                     <div class="text-right hidden sm:block">
@@ -230,7 +244,7 @@
                 <i data-lucide="music" class="text-amber-500 w-5 h-5"></i>
                 <h3 class="font-serif text-xl text-amber-50">¿No encuentras una canción especial?</h3>
             </div>
-            <p class="text-sm text-neutral-400 mb-4">Añádela a tu lista y la prepararé exclusivamente para tu evento.</p>
+            <p class="text-sm text-neutral-400 mb-4">Escríbe el nombre y artista de la cancion/pieza y la revisaremos con gusto.</p>
             <div class="flex gap-3">
                 <input type="text" id="customSongInput" placeholder="Ej. A Thousand Years - Christina Perri" 
                        class="flex-1 bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none transition-colors">
@@ -261,7 +275,7 @@
                     <i data-lucide="shield" class="w-5 h-5"></i> Panel Admin
                 </h2>
                 
-                <!-- Tab Navigation (Hidden in Auth) -->
+                <!-- Tab Navigation -->
                 <div id="adminTabsNav" class="hidden flex-1 flex gap-2 overflow-x-auto w-full md:w-auto custom-scrollbar pb-2 md:pb-0">
                     <button class="tab-btn active px-4 py-2 text-sm font-medium text-amber-500 border-b-2 border-amber-500 whitespace-nowrap transition-colors" onclick="window.switchAdminTab('tabSettings', this)"><i data-lucide="settings" class="w-4 h-4 inline-block mr-1"></i> Configuración</button>
                     <button class="tab-btn px-4 py-2 text-sm font-medium text-neutral-400 border-b-2 border-transparent hover:text-neutral-200 whitespace-nowrap transition-colors" onclick="window.switchAdminTab('tabCatalog', this)"><i data-lucide="music" class="w-4 h-4 inline-block mr-1"></i> Catálogo</button>
@@ -287,7 +301,7 @@
                 <!-- Management Screen (Tabs Container) -->
                 <div id="adminManager" class="hidden">
                     
-                    <!-- TAB 1: Settings & Moments -->
+                    <!-- TAB 1: Settings & Genres -->
                     <div id="tabSettings" class="admin-tab active space-y-8">
                         <section class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
                             <h3 class="text-sm font-bold uppercase text-amber-500 mb-6 tracking-widest">Configuración General y Contacto</h3>
@@ -321,13 +335,13 @@
                         </section>
 
                         <section class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
-                            <h3 class="text-sm font-bold uppercase text-amber-500 mb-4 tracking-widest">Gestión de Momentos del Evento</h3>
-                            <p class="text-xs text-neutral-500 mb-4">Añade o elimina las categorías para filtrar el catálogo.</p>
+                            <h3 class="text-sm font-bold uppercase text-amber-500 mb-4 tracking-widest">Gestión de Géneros Musicales</h3>
+                            <p class="text-xs text-neutral-500 mb-4">Añade o elimina los géneros musicales de tu catálogo.</p>
                             <div class="flex gap-2 mb-4">
-                                <input type="text" id="newMomentInput" placeholder="Ej. Baile Sorpresa" class="flex-1 bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm text-neutral-200 outline-none focus:border-amber-500">
-                                <button onclick="window.addMoment()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 rounded-lg font-bold transition-all"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                                <input type="text" id="newGenreInput" placeholder="Ej. Bossa Nova" class="flex-1 bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm text-neutral-200 outline-none focus:border-amber-500">
+                                <button onclick="window.addGenre()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 rounded-lg font-bold transition-all"><i data-lucide="plus" class="w-4 h-4"></i></button>
                             </div>
-                            <div id="momentsAdminList" class="flex flex-wrap gap-2">
+                            <div id="genresAdminList" class="flex flex-wrap gap-2">
                                 <!-- Populated dynamically -->
                             </div>
                         </section>
@@ -344,8 +358,8 @@
                                     <input type="text" id="newLink" placeholder="Enlace de YouTube o Spotify (Opcional)" class="bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm text-neutral-200 outline-none focus:border-amber-500 md:col-span-2">
                                 </div>
                                 
-                                <p class="text-xs text-neutral-500 mb-2">Selecciona los momentos donde encaja esta pieza:</p>
-                                <div id="momentCheckboxes" class="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4 bg-zinc-950 p-4 rounded-lg border border-white/5 max-h-40 overflow-y-auto custom-scrollbar">
+                                <p class="text-xs text-neutral-500 mb-2">Selecciona los géneros musicales de esta pieza:</p>
+                                <div id="genreCheckboxes" class="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4 bg-zinc-950 p-4 rounded-lg border border-white/5 max-h-40 overflow-y-auto custom-scrollbar">
                                     <!-- Checkboxes populated via JS -->
                                 </div>
 
@@ -376,7 +390,7 @@
                             
                             <div class="grid grid-cols-12 gap-2 px-4 py-2 text-[10px] uppercase font-bold text-neutral-500 border-b border-white/10 mb-2">
                                 <div class="col-span-5">Pieza / Referencia</div>
-                                <div class="col-span-4">Momentos</div>
+                                <div class="col-span-4">Géneros Musicales</div>
                                 <div class="col-span-1 text-center" title="Veces solicitada">Clics</div>
                                 <div class="col-span-2 text-right">Acciones</div>
                             </div>
@@ -414,33 +428,63 @@
                     <div id="tabStats" class="admin-tab space-y-8">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-sm font-bold uppercase text-amber-500 tracking-widest">Dashboard de Métricas</h3>
-                            <button onclick="window.renderCharts()" class="text-xs text-neutral-400 hover:text-white flex items-center gap-1"><i data-lucide="refresh-cw" class="w-3 h-3"></i> Actualizar Gráficas</button>
+                            <button onclick="window.renderCharts()" class="text-xs text-neutral-400 hover:text-white flex items-center gap-1 transition-colors"><i data-lucide="refresh-cw" class="w-3 h-3"></i> Actualizar Gráficas</button>
                         </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Piezas por Momento -->
-                            <div class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
-                                <h4 class="text-xs font-bold text-neutral-300 mb-4 text-center">Canciones disponibles por Momento</h4>
-                                <div class="relative h-64">
-                                    <canvas id="chartMoments"></canvas>
+                        <!-- FULL WIDTH GRIDS (1 por fila) -->
+                        <div class="grid grid-cols-1 gap-8">
+                            
+                            <!-- Piezas por Género -->
+                            <div class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5 relative">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h4 class="text-sm font-bold text-neutral-300">Canciones disponibles por Género Musical</h4>
+                                    <div class="flex gap-2">
+                                        <button onclick="window.downloadChartImage('chartGenres', 'Grafica_Generos')" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-amber-500 px-3 py-1.5 rounded transition-colors flex items-center gap-1 border border-white/5">
+                                            <i data-lucide="image-down" class="w-3 h-3"></i> Descargar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="relative w-full h-[400px]">
+                                    <canvas id="chartGenres"></canvas>
                                 </div>
                             </div>
                             
                             <!-- Top Clics -->
-                            <div class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
-                                <h4 class="text-xs font-bold text-neutral-300 mb-4 text-center">Top 10 Piezas Más Solicitadas</h4>
-                                <div class="relative h-64">
+                            <div class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5 relative">
+                                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                                    <h4 class="text-sm font-bold text-neutral-300">Piezas Más Solicitadas</h4>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button onclick="window.filterTopClicks(5)" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">Top 5</button>
+                                        <button onclick="window.filterTopClicks(10)" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">Top 10</button>
+                                        <button onclick="window.filterTopClicks(20)" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">Top 20</button>
+                                        <button onclick="window.downloadChartImage('chartClicks', 'Grafica_TopCanciones')" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-amber-500 px-3 py-1.5 rounded transition-colors flex items-center gap-1 border border-white/5 ml-auto md:ml-2">
+                                            <i data-lucide="image-down" class="w-3 h-3"></i> Descargar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="relative w-full h-[400px]">
                                     <canvas id="chartClicks"></canvas>
                                 </div>
                             </div>
                             
                             <!-- Repertorios por Fecha (Line Chart) -->
-                            <div class="md:col-span-2 bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
-                                <h4 class="text-xs font-bold text-neutral-300 mb-4 text-center">Repertorios Generados (Histórico)</h4>
-                                <div class="relative h-64">
+                            <div class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5 relative">
+                                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                                    <h4 class="text-sm font-bold text-neutral-300">Repertorios Generados (Histórico)</h4>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button onclick="window.filterRepertoiresDays(7)" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">Últimos 7 días</button>
+                                        <button onclick="window.filterRepertoiresDays(30)" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">Últimos 30 días</button>
+                                        <button onclick="window.filterRepertoiresDays(0)" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-neutral-300 px-3 py-1.5 rounded transition-colors border border-white/5 focus:border-amber-500 focus:text-amber-500">Todo</button>
+                                        <button onclick="window.downloadChartImage('chartRepertoires', 'Grafica_Repertorios')" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-amber-500 px-3 py-1.5 rounded transition-colors flex items-center gap-1 border border-white/5 ml-auto md:ml-2">
+                                            <i data-lucide="image-down" class="w-3 h-3"></i> Descargar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="relative w-full h-[400px]">
                                     <canvas id="chartRepertoires"></canvas>
                                 </div>
                             </div>
+                            
                         </div>
                     </div>
 
@@ -470,7 +514,7 @@
         const db = getFirestore(app);
 
         // --- Defaults ---
-        const defaultMoments = ["Ceremonia", "Entrada de los Novios", "Recepción y Cóctel", "Banquete (Cena)", "Primer Baile (Vals)", "Bailables y Fiesta", "Propuestas de Matrimonio"];
+        const defaultGenres = ["Pop", "Jazz & Bossa Nova", "Clásico", "Baladas", "Boleros", "Música Latina", "Cine y Soundtracks", "Lounge"];
         const defaultSettings = {
             wa: "8110474854",
             ig: "https://www.instagram.com/rolandolivemusic/",
@@ -484,16 +528,18 @@
         window.songs = [];
         window.repertoires = [];
         window.siteSettings = defaultSettings;
-        window.activeMoments = defaultMoments;
+        window.activeGenres = defaultGenres;
         window.orderedSelection = []; 
         window.dragStartIndex = null;
         window.editingSongId = null;
         window.adminListenersStarted = false;
 
-        // Charts instances
-        let chartInstanceMoments = null;
+        // Charts instances & Filter State
+        let chartInstanceGenres = null;
         let chartInstanceClicks = null;
         let chartInstanceRepertoires = null;
+        window.activeTopFilter = 10;
+        window.activeDaysFilter = 0; // 0 = all
 
         const iconsSVG = {
             ig: `<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>`,
@@ -507,7 +553,6 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Listen Songs (Public)
                 onSnapshot(collection(db, "rlm_songs"), (snapshot) => {
                     window.songs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     
@@ -523,7 +568,6 @@
                     document.getElementById('loadingText').innerText = "Error cargando el repertorio.";
                 });
 
-                // Listen Settings (Public)
                 onSnapshot(doc(db, "rlm_settings", "general"), (docSnap) => {
                     if (docSnap.exists()) {
                         window.siteSettings = { ...defaultSettings, ...docSnap.data() };
@@ -536,33 +580,61 @@
                     }
                 }, (error) => console.warn("Error cargando ajustes:", error));
 
-                // Listen Moments (Public)
-                onSnapshot(doc(db, "rlm_settings", "moments"), (docSnap) => {
+                // Change to 'genres' doc
+                onSnapshot(doc(db, "rlm_settings", "genres"), (docSnap) => {
                     if (docSnap.exists() && docSnap.data().list) {
-                        window.activeMoments = docSnap.data().list;
+                        window.activeGenres = docSnap.data().list;
                     } else {
-                        setDoc(doc(db, "rlm_settings", "moments"), { list: defaultMoments }).catch(e => console.warn(e));
+                        setDoc(doc(db, "rlm_settings", "genres"), { list: defaultGenres }).catch(e => console.warn(e));
                     }
                     window.renderFilters();
-                    window.renderMomentsAdmin();
-                    window.renderMomentCheckboxes();
-                }, (error) => console.warn("Error cargando momentos:", error));
+                    window.renderGenresAdmin();
+                    window.renderGenreCheckboxes();
+                }, (error) => console.warn("Error cargando géneros:", error));
             }
         });
 
-        // Initialize Admin-only Listeners
         window.startAdminListeners = () => {
             if(window.adminListenersStarted) return;
             window.adminListenersStarted = true;
 
-            // Listen Repertoires (Admin ONLY)
             onSnapshot(collection(db, "rlm_repertoires"), (snapshot) => {
                 window.repertoires = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 window.repertoires.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 window.renderRepertoiresAdmin();
+                if(document.getElementById('tabStats').classList.contains('active')) {
+                    window.renderCharts();
+                }
             }, (error) => {
                 console.error("Error obteniendo repertorios (posible falta de permisos):", error);
             });
+        };
+
+        // --- Media Embed Modal Logic ---
+        window.openMediaModal = (event, url) => {
+            event.stopPropagation();
+            let embedUrl = url;
+
+            if (url.includes('youtube.com/watch?v=')) {
+                embedUrl = url.replace('watch?v=', 'embed/');
+                embedUrl = embedUrl.split('&')[0]; 
+            } else if (url.includes('youtu.be/')) {
+                const id = url.split('youtu.be/')[1].split('?')[0];
+                embedUrl = `https://www.youtube.com/embed/${id}`;
+            } else if (url.includes('open.spotify.com/track/')) {
+                embedUrl = url.replace('/track/', '/embed/track/');
+            } else if (!url.includes('spotify') && !url.includes('youtube')) {
+                window.open(url, '_blank');
+                return;
+            }
+
+            document.getElementById('mediaIframe').src = embedUrl;
+            document.getElementById('mediaModal').classList.remove('hidden');
+        };
+
+        window.closeMediaModal = () => {
+            document.getElementById('mediaModal').classList.add('hidden');
+            document.getElementById('mediaIframe').src = '';
         };
 
         // --- UI Rendering ---
@@ -597,8 +669,8 @@
 
         window.renderFilters = () => {
             const filter = document.getElementById('genreFilter');
-            filter.innerHTML = '<option value="Todos">Filtrar por momento...</option>';
-            window.activeMoments.forEach(g => {
+            filter.innerHTML = '<option value="Todos">Filtrar por género musical...</option>';
+            window.activeGenres.forEach(g => {
                 filter.innerHTML += `<option value="${g}">${g}</option>`;
             });
         };
@@ -627,7 +699,7 @@
                 const displayGenre = genresArr.length > 0 ? genresArr[0] + (genresArr.length > 1 ? ` (+${genresArr.length - 1})` : '') : 'General';
                 
                 const playBtn = s.link 
-                    ? `<button onclick="event.stopPropagation(); window.open('${s.link}', '_blank')" class="ml-2 text-amber-500 hover:text-white bg-amber-500/10 hover:bg-amber-600 rounded-full p-1.5 transition-colors" title="Escuchar"><i data-lucide="play" class="w-3.5 h-3.5"></i></button>` 
+                    ? `<button onclick="window.openMediaModal(event, '${s.link}')" class="ml-2 text-amber-500 hover:text-white bg-amber-500/10 hover:bg-amber-600 rounded-full p-1.5 transition-colors" title="Escuchar"><i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i></button>` 
                     : '';
 
                 return `
@@ -822,7 +894,7 @@
                     await addDoc(collection(db, "rlm_repertoires"), {
                         clientName: cName,
                         clientPhone: cPhone,
-                        eventType: cEventType || "No especificado",
+                        eventType: cEventType,
                         clientDate: cDate,
                         comments: cComments,
                         songs: window.orderedSelection.map(s => ({ titulo: s.titulo, ref: s.ref, isCustom: s.isCustom || false })),
@@ -886,8 +958,8 @@
                 document.getElementById('adminTabsNav').classList.remove('hidden');
                 
                 window.loadAdminSettings();
-                window.renderMomentsAdmin();
-                window.renderMomentCheckboxes();
+                window.renderGenresAdmin();
+                window.renderGenreCheckboxes();
                 window.renderAdminList();
                 window.startAdminListeners();
             } else {
@@ -910,7 +982,7 @@
             if(tabId === 'tabStats') window.renderCharts();
         };
 
-        // --- Tab 1: Config & Momentos ---
+        // --- Tab 1: Config & Géneros ---
         window.loadAdminSettings = () => {
             document.getElementById('setLogoImg').value = window.siteSettings.logoImage || "";
             document.getElementById('setHeroBgImg').value = window.siteSettings.heroBgImage || "";
@@ -938,38 +1010,38 @@
             setTimeout(() => { btn.innerText = originalText; btn.classList.remove("bg-green-600"); }, 2000);
         };
 
-        window.renderMomentsAdmin = () => {
-            const list = document.getElementById('momentsAdminList');
-            list.innerHTML = window.activeMoments.map((m, index) => `
+        window.renderGenresAdmin = () => {
+            const list = document.getElementById('genresAdminList');
+            list.innerHTML = window.activeGenres.map((m, index) => `
                 <div class="bg-zinc-800 text-neutral-200 text-xs px-3 py-1.5 rounded-full flex items-center gap-2 border border-white/10">
                     <span>${m}</span>
-                    <button onclick="window.deleteMoment(${index})" class="text-red-400 hover:text-red-300"><i data-lucide="x" class="w-3 h-3"></i></button>
+                    <button onclick="window.deleteGenre(${index})" class="text-red-400 hover:text-red-300"><i data-lucide="x" class="w-3 h-3"></i></button>
                 </div>
             `).join('');
             if(window.lucide) window.lucide.createIcons();
         };
 
-        window.addMoment = async () => {
-            const val = document.getElementById('newMomentInput').value.trim();
-            if(!val || window.activeMoments.includes(val)) return;
-            const newArray = [...window.activeMoments, val];
-            await setDoc(doc(db, "rlm_settings", "moments"), { list: newArray });
-            document.getElementById('newMomentInput').value = '';
+        window.addGenre = async () => {
+            const val = document.getElementById('newGenreInput').value.trim();
+            if(!val || window.activeGenres.includes(val)) return;
+            const newArray = [...window.activeGenres, val];
+            await setDoc(doc(db, "rlm_settings", "genres"), { list: newArray });
+            document.getElementById('newGenreInput').value = '';
         };
 
-        window.deleteMoment = async (index) => {
-            if(confirm("¿Eliminar este momento? Las canciones asignadas seguirán existiendo pero no se filtrarán por esto.")) {
-                const newArray = [...window.activeMoments];
+        window.deleteGenre = async (index) => {
+            if(confirm("¿Eliminar este género musical? Las canciones asignadas seguirán existiendo pero no se filtrarán por esto.")) {
+                const newArray = [...window.activeGenres];
                 newArray.splice(index, 1);
-                await setDoc(doc(db, "rlm_settings", "moments"), { list: newArray });
+                await setDoc(doc(db, "rlm_settings", "genres"), { list: newArray });
             }
         };
 
-        window.renderMomentCheckboxes = () => {
-            const container = document.getElementById('momentCheckboxes');
-            container.innerHTML = window.activeMoments.map(m => `
+        window.renderGenreCheckboxes = () => {
+            const container = document.getElementById('genreCheckboxes');
+            container.innerHTML = window.activeGenres.map(m => `
                 <label class="flex items-center gap-2 text-xs text-neutral-300 cursor-pointer">
-                    <input type="checkbox" value="${m}" class="song-moment-cb rounded bg-zinc-800 border-white/20 text-amber-500 focus:ring-amber-500">
+                    <input type="checkbox" value="${m}" class="song-genre-cb rounded bg-zinc-800 border-white/20 text-amber-500 focus:ring-amber-500">
                     ${m}
                 </label>
             `).join('');
@@ -989,7 +1061,7 @@
                     <div class="col-span-5 min-w-0">
                         <div class="flex items-center gap-2">
                             <p class="text-xs font-bold text-neutral-200 truncate">${s.titulo}</p>
-                            ${s.link ? `<a href="${s.link}" target="_blank" class="text-amber-500 hover:text-amber-400 flex-shrink-0"><i data-lucide="link-2" class="w-3 h-3"></i></a>` : ''}
+                            ${s.link ? `<button onclick="window.openMediaModal(event, '${s.link}')" class="text-amber-500 hover:text-amber-400 flex-shrink-0"><i data-lucide="play-circle" class="w-3 h-3"></i></button>` : ''}
                         </div>
                         <p class="text-[9px] text-neutral-500 truncate">${s.ref}</p>
                     </div>
@@ -1014,11 +1086,11 @@
             const ref = document.getElementById('newRef').value.trim();
             const link = document.getElementById('newLink').value.trim();
             
-            const checkboxes = document.querySelectorAll('.song-moment-cb:checked');
+            const checkboxes = document.querySelectorAll('.song-genre-cb:checked');
             const selectedMoments = Array.from(checkboxes).map(cb => cb.value);
 
             if (!title) return alert("El título es obligatorio.");
-            if (selectedMoments.length === 0) return alert("Selecciona al menos un momento.");
+            if (selectedMoments.length === 0) return alert("Selecciona al menos un género musical.");
 
             const btn = event.target;
             const originalText = btn.innerText;
@@ -1048,7 +1120,7 @@
             document.getElementById('newLink').value = song.link || '';
             
             const genresArr = getGenresArray(song.genero);
-            document.querySelectorAll('.song-moment-cb').forEach(cb => { cb.checked = genresArr.includes(cb.value); });
+            document.querySelectorAll('.song-genre-cb').forEach(cb => { cb.checked = genresArr.includes(cb.value); });
             document.getElementById('saveSongBtn').innerText = "Guardar Cambios";
             document.getElementById('cancelEditBtn').classList.remove('hidden');
             document.getElementById('songFormSection').scrollIntoView({ behavior: 'smooth' });
@@ -1060,7 +1132,7 @@
             document.getElementById('newTitle').value = '';
             document.getElementById('newRef').value = '';
             document.getElementById('newLink').value = '';
-            document.querySelectorAll('.song-moment-cb').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.song-genre-cb').forEach(cb => cb.checked = false);
             document.getElementById('saveSongBtn').innerText = "Añadir Pieza";
             document.getElementById('cancelEditBtn').classList.add('hidden');
         };
@@ -1128,39 +1200,71 @@
             document.body.removeChild(link);
         };
 
-        // --- Tab 4: Estadísticas (Chart.js) ---
+        // --- Tab 4: Estadísticas (Chart.js) con Filtros y Descarga ---
+        
+        const customCanvasBackgroundColor = {
+            id: 'customCanvasBackgroundColor',
+            beforeDraw: (chart, args, options) => {
+                const {ctx} = chart;
+                ctx.save();
+                ctx.globalCompositeOperation = 'destination-over';
+                ctx.fillStyle = options.color || '#09090b';
+                ctx.fillRect(0, 0, chart.width, chart.height);
+                ctx.restore();
+            }
+        };
+
+        window.filterTopClicks = (limit) => {
+            window.activeTopFilter = limit;
+            window.renderCharts();
+        };
+
+        window.filterRepertoiresDays = (days) => {
+            window.activeDaysFilter = days;
+            window.renderCharts();
+        };
+
+        window.downloadChartImage = (canvasId, filename) => {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = filename + '.png';
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.click();
+        };
+
         window.renderCharts = () => {
-            // 1. Chart: Canciones por Momento (Doughnut)
-            const momentCounts = {};
-            window.activeMoments.forEach(m => momentCounts[m] = 0);
-            momentCounts["General / Otros"] = 0;
+            // 1. Chart: Canciones por Género Musical (Doughnut)
+            const genreCounts = {};
+            window.activeGenres.forEach(m => genreCounts[m] = 0);
+            genreCounts["General / Otros"] = 0;
 
             window.songs.forEach(s => {
                 const genresArr = getGenresArray(s.genero);
-                if (genresArr.length === 0) momentCounts["General / Otros"]++;
+                if (genresArr.length === 0) genreCounts["General / Otros"]++;
                 genresArr.forEach(g => {
-                    if (momentCounts[g] !== undefined) momentCounts[g]++;
-                    else momentCounts["General / Otros"]++;
+                    if (genreCounts[g] !== undefined) genreCounts[g]++;
+                    else genreCounts["General / Otros"]++;
                 });
             });
 
-            if(chartInstanceMoments) chartInstanceMoments.destroy();
-            const ctxMoments = document.getElementById('chartMoments').getContext('2d');
-            chartInstanceMoments = new Chart(ctxMoments, {
+            if(chartInstanceGenres) chartInstanceGenres.destroy();
+            const ctxGenres = document.getElementById('chartGenres').getContext('2d');
+            chartInstanceGenres = new Chart(ctxGenres, {
                 type: 'doughnut',
                 data: {
-                    labels: Object.keys(momentCounts).filter(k => momentCounts[k] > 0),
+                    labels: Object.keys(genreCounts).filter(k => genreCounts[k] > 0),
                     datasets: [{
-                        data: Object.values(momentCounts).filter(v => v > 0),
+                        data: Object.values(genreCounts).filter(v => v > 0),
                         backgroundColor: ['#d4af37', '#fbe599', '#9ca3af', '#52525b', '#27272a', '#18181b', '#ffffff'],
                         borderWidth: 1, borderColor: '#09090b'
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#e5e5e5', font: {size: 10} } } } }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#e5e5e5', font: {size: 10} } }, customCanvasBackgroundColor: { color: '#09090b' } } },
+                plugins: [customCanvasBackgroundColor]
             });
 
-            // 2. Chart: Top 10 Canciones (Bar)
-            const topSongs = [...window.songs].sort((a, b) => (b.clicks || 0) - (a.clicks || 0)).slice(0, 10);
+            // 2. Chart: Top N Canciones (Bar)
+            const topSongs = [...window.songs].sort((a, b) => (b.clicks || 0) - (a.clicks || 0)).slice(0, window.activeTopFilter);
             
             if(chartInstanceClicks) chartInstanceClicks.destroy();
             const ctxClicks = document.getElementById('chartClicks').getContext('2d');
@@ -1175,17 +1279,23 @@
                         borderRadius: 4
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: '#9ca3af' } }, x: { ticks: { color: '#9ca3af', maxRotation: 45, minRotation: 45 } } }, plugins: { legend: { display: false } } }
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: '#9ca3af' } }, x: { ticks: { color: '#9ca3af', maxRotation: 45, minRotation: 45 } } }, plugins: { legend: { display: false }, customCanvasBackgroundColor: { color: '#09090b' } } },
+                plugins: [customCanvasBackgroundColor]
             });
 
             // 3. Chart: Repertorios por Fecha (Line)
             const dateCounts = {};
+            const now = new Date();
+            const filterTime = window.activeDaysFilter > 0 ? new Date(now.setDate(now.getDate() - window.activeDaysFilter)) : new Date(0);
+
             window.repertoires.forEach(r => {
                 if(!r.timestamp) return;
-                const d = new Date(r.timestamp).toLocaleDateString('es-MX', { month: 'short', day: 'numeric' });
-                dateCounts[d] = (dateCounts[d] || 0) + 1;
+                const rDate = new Date(r.timestamp);
+                if(rDate >= filterTime) {
+                    const d = rDate.toLocaleDateString('es-MX', { month: 'short', day: 'numeric' });
+                    dateCounts[d] = (dateCounts[d] || 0) + 1;
+                }
             });
-            // Sort dates logically
             const sortedDates = Object.keys(dateCounts).sort((a,b) => new Date(a) - new Date(b));
 
             if(chartInstanceRepertoires) chartInstanceRepertoires.destroy();
@@ -1201,14 +1311,15 @@
                         fill: true, tension: 0.3, pointBackgroundColor: '#ffffff'
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: '#9ca3af', stepSize: 1 } }, x: { ticks: { color: '#9ca3af' } } }, plugins: { legend: { display: false } } }
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: '#9ca3af', stepSize: 1 } }, x: { ticks: { color: '#9ca3af' } } }, plugins: { legend: { display: false }, customCanvasBackgroundColor: { color: '#09090b' } } },
+                plugins: [customCanvasBackgroundColor]
             });
         };
 
         // --- CSV Export (Catálogo) ---
         const escapeCSV = (str) => `"${(str || '').toString().replace(/"/g, '""')}"`;
         window.exportCSV = () => {
-            let csvContent = "Titulo,Referencia,Momentos,Enlace,Solicitudes(Clics)\n";
+            let csvContent = "Titulo,Referencia,Géneros Musicales,Enlace,Solicitudes(Clics)\n";
             window.songs.forEach(s => {
                 const genresArr = getGenresArray(s.genero);
                 csvContent += `${escapeCSV(s.titulo)},${escapeCSV(s.ref)},${escapeCSV(genresArr.join(' | '))},${escapeCSV(s.link)},${s.clicks || 0}\n`;
@@ -1250,13 +1361,13 @@
                     if (!rows[i].trim()) continue;
                     const cols = parseCSVLine(rows[i]);
                     if(cols.length >= 3 && cols[0]) {
-                        const momentsFromCSV = cols[2].split('|').map(m => m.trim()).filter(m => m);
+                        const genresFromCSV = cols[2].split('|').map(m => m.trim()).filter(m => m);
                         await addDoc(collection(db, "rlm_songs"), {
-                            titulo: cols[0], ref: cols[1], genero: momentsFromCSV.length > 0 ? momentsFromCSV : ["General"], link: cols[3] || "", clicks: parseInt(cols[4]) || 0
+                            titulo: cols[0], ref: cols[1], genero: genresFromCSV.length > 0 ? genresFromCSV : ["General"], link: cols[3] || "", clicks: parseInt(cols[4]) || 0
                         });
                         addedCount++;
-                        momentsFromCSV.forEach(m => {
-                            if(!window.activeMoments.includes(m)) { window.activeMoments.push(m); setDoc(doc(db, "rlm_settings", "moments"), { list: window.activeMoments }); }
+                        genresFromCSV.forEach(m => {
+                            if(!window.activeGenres.includes(m)) { window.activeGenres.push(m); setDoc(doc(db, "rlm_settings", "genres"), { list: window.activeGenres }); }
                         });
                     }
                 }
