@@ -193,7 +193,6 @@
                     <input type="text" id="clientName" placeholder="Nombre completo" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none transition-colors">
                     <input type="tel" id="clientPhone" placeholder="Teléfono" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none transition-colors">
                     
-                    <!-- Mandatory Event Type Select with Highlight -->
                     <select id="clientEventType" class="bg-zinc-900 border-2 border-amber-500/80 rounded-xl px-4 py-3 text-sm focus:border-amber-500 outline-none transition-colors text-neutral-200 font-semibold shadow-[0_0_15px_rgba(212,175,55,0.15)]">
                         <option value="" disabled selected>Tipo de Evento (Obligatorio) *</option>
                         <option value="Boda">Boda</option>
@@ -215,7 +214,7 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 gap-4">
                 <div>
                     <h2 class="text-3xl font-serif text-amber-500 mb-1">Tu Repertorio</h2>
-                    <p class="text-neutral-400 text-sm mb-2">Arrastra las canciones para cambiar el orden exacto y añade notas si lo deseas.</p>
+                    <p class="text-neutral-400 text-sm mb-2">Arrastra las canciones para cambiar el orden exacto y añade notas o instrumentos si lo deseas.</p>
                     <div class="inline-flex items-center gap-2 bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3 py-1.5 rounded-lg text-sm font-medium">
                         <i data-lucide="timer" class="w-4 h-4"></i>
                         <span id="timeEstimator">0 min aprox de música</span>
@@ -330,42 +329,10 @@
                 <!-- Management Screen (Tabs Container) -->
                 <div id="adminManager" class="hidden">
                     
-                    <!-- TAB 1: Settings & Colors -->
+                    <!-- TAB 1: Settings, Genres & Instruments -->
                     <div id="tabSettings" class="admin-tab active space-y-8">
                         <section class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
-                            <h3 class="text-sm font-bold uppercase text-amber-500 mb-6 tracking-widest">Apariencia y Colores</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                                <div>
-                                    <label class="text-xs text-neutral-500 mb-1 block">Color Principal</label>
-                                    <div class="flex items-center gap-2 bg-zinc-900 border border-white/10 rounded-lg p-2">
-                                        <input type="color" id="setColorPrimary" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0 p-0" value="#f59e0b">
-                                        <span class="text-xs text-neutral-300 font-mono" id="hexPrimary">#f59e0b</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="text-xs text-neutral-500 mb-1 block">Color de Fondo</label>
-                                    <div class="flex items-center gap-2 bg-zinc-900 border border-white/10 rounded-lg p-2">
-                                        <input type="color" id="setColorBg" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0 p-0" value="#09090b">
-                                        <span class="text-xs text-neutral-300 font-mono" id="hexBg">#09090b</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="text-xs text-neutral-500 mb-1 block">Color Tarjetas</label>
-                                    <div class="flex items-center gap-2 bg-zinc-900 border border-white/10 rounded-lg p-2">
-                                        <input type="color" id="setColorCard" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0 p-0" value="#18181b">
-                                        <span class="text-xs text-neutral-300 font-mono" id="hexCard">#18181b</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="text-xs text-neutral-500 mb-1 block">Color Textos</label>
-                                    <div class="flex items-center gap-2 bg-zinc-900 border border-white/10 rounded-lg p-2">
-                                        <input type="color" id="setColorText" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0 p-0" value="#e5e5e5">
-                                        <span class="text-xs text-neutral-300 font-mono" id="hexText">#e5e5e5</span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <h3 class="text-sm font-bold uppercase text-amber-500 mb-4 mt-8 tracking-widest">Textos e Imágenes de Marca</h3>
+                            <h3 class="text-sm font-bold uppercase text-amber-500 mb-6 tracking-widest">Configuración de Marca y Contacto</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="md:col-span-2">
                                     <label class="text-xs text-neutral-500 mb-1 block">Título Principal (Hero)</label>
@@ -400,6 +367,39 @@
                                     <input type="text" id="setTk" class="w-full bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm focus:border-amber-500 outline-none text-neutral-200">
                                 </div>
                             </div>
+                            
+                            <h3 class="text-sm font-bold uppercase text-amber-500 mb-4 mt-8 tracking-widest">Apariencia y Colores</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                                <div>
+                                    <label class="text-xs text-neutral-500 mb-1 block">Color Principal</label>
+                                    <div class="flex items-center gap-2 bg-zinc-900 border border-white/10 rounded-lg p-2">
+                                        <input type="color" id="setColorPrimary" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0 p-0" value="#f59e0b">
+                                        <span class="text-xs text-neutral-300 font-mono" id="hexPrimary">#f59e0b</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-neutral-500 mb-1 block">Color de Fondo</label>
+                                    <div class="flex items-center gap-2 bg-zinc-900 border border-white/10 rounded-lg p-2">
+                                        <input type="color" id="setColorBg" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0 p-0" value="#09090b">
+                                        <span class="text-xs text-neutral-300 font-mono" id="hexBg">#09090b</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-neutral-500 mb-1 block">Color Tarjetas</label>
+                                    <div class="flex items-center gap-2 bg-zinc-900 border border-white/10 rounded-lg p-2">
+                                        <input type="color" id="setColorCard" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0 p-0" value="#18181b">
+                                        <span class="text-xs text-neutral-300 font-mono" id="hexCard">#18181b</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-neutral-500 mb-1 block">Color Textos</label>
+                                    <div class="flex items-center gap-2 bg-zinc-900 border border-white/10 rounded-lg p-2">
+                                        <input type="color" id="setColorText" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0 p-0" value="#e5e5e5">
+                                        <span class="text-xs text-neutral-300 font-mono" id="hexText">#e5e5e5</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <button onclick="window.saveAdminSettings(event)" class="mt-5 w-full bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl p-3 text-sm font-semibold transition-colors border border-white/5">Guardar Configuración y Colores</button>
                         </section>
 
@@ -411,6 +411,18 @@
                                 <button onclick="window.addGenre()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 rounded-lg font-bold transition-all"><i data-lucide="plus" class="w-4 h-4"></i></button>
                             </div>
                             <div id="genresAdminList" class="flex flex-wrap gap-2">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </section>
+
+                        <section class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
+                            <h3 class="text-sm font-bold uppercase text-amber-500 mb-4 tracking-widest">Gestión de Instrumentos</h3>
+                            <p class="text-xs text-neutral-500 mb-4">Añade o elimina los instrumentos disponibles para que el cliente seleccione en su repertorio.</p>
+                            <div class="flex gap-2 mb-4">
+                                <input type="text" id="newInstrumentInput" placeholder="Ej. Saxofón" class="flex-1 bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm text-neutral-200 outline-none focus:border-amber-500">
+                                <button onclick="window.addInstrument()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 rounded-lg font-bold transition-all"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                            </div>
+                            <div id="instrumentsAdminList" class="flex flex-wrap gap-2">
                                 <!-- Populated dynamically -->
                             </div>
                         </section>
@@ -558,7 +570,6 @@
                                     </div>
 
                                     <p class="text-xs text-neutral-500 mb-2">Vista previa de la imagen:</p>
-                                    <!-- This is an exact visual replica of the captureArea for the Admin to generate images -->
                                     <div class="w-full overflow-hidden rounded-xl border border-white/10">
                                         <div style="transform: scale(0.65); transform-origin: top left; width: 153.84%;" class="bg-white pb-8">
                                             <div id="adminCaptureArea" class="p-8 screenshot-area relative bg-white">
@@ -690,6 +701,7 @@
 
         // --- Defaults ---
         const defaultGenres = ["Pop", "Jazz & Bossa Nova", "Clásico", "Baladas", "Boleros", "Música Latina", "Cine y Soundtracks", "Lounge"];
+        const defaultInstruments = ["Saxofón", "Violín", "Acústico", "Pista"];
         const defaultSettings = {
             mainTitle: "Rolando Live Music",
             subTitle: "Bodas • Cenas • Aniversarios",
@@ -710,11 +722,11 @@
         window.repertoires = [];
         window.siteSettings = defaultSettings;
         window.activeGenres = defaultGenres;
+        window.activeInstruments = defaultInstruments;
         
-        window.orderedSelection = []; // Client selection
-        
+        window.orderedSelection = []; 
         window.editingRepertoireId = null; 
-        window.editingRepertoireSongs = []; // Admin editor selection
+        window.editingRepertoireSongs = []; 
 
         window.editingSongId = null;
         window.adminListenersStarted = false;
@@ -746,9 +758,7 @@
                 root.style.setProperty('--c-primary-light', shadeHexColor(window.siteSettings.colorPrimary, 0.2));
                 root.style.setProperty('--c-primary-dark', shadeHexColor(window.siteSettings.colorPrimary, -0.2));
             }
-            if(window.siteSettings.colorBg) {
-                root.style.setProperty('--c-bg', window.siteSettings.colorBg);
-            }
+            if(window.siteSettings.colorBg) { root.style.setProperty('--c-bg', window.siteSettings.colorBg); }
             if(window.siteSettings.colorCard) {
                 root.style.setProperty('--c-card', window.siteSettings.colorCard);
                 root.style.setProperty('--c-card-hover', shadeHexColor(window.siteSettings.colorCard, 0.05));
@@ -793,15 +803,22 @@
                 }, (error) => console.warn("Error cargando ajustes:", error));
 
                 onSnapshot(doc(db, "rlm_settings", "genres"), (docSnap) => {
-                    if (docSnap.exists() && docSnap.data().list) {
-                        window.activeGenres = docSnap.data().list;
-                    } else {
-                        setDoc(doc(db, "rlm_settings", "genres"), { list: defaultGenres }).catch(e => console.warn(e));
-                    }
+                    if (docSnap.exists() && docSnap.data().list) { window.activeGenres = docSnap.data().list; } 
+                    else { setDoc(doc(db, "rlm_settings", "genres"), { list: defaultGenres }).catch(e => console.warn(e)); }
                     window.renderFilters();
                     window.renderGenresAdmin();
                     window.renderGenreCheckboxes();
                 }, (error) => console.warn("Error cargando géneros:", error));
+
+                // Listen Instruments (Public)
+                onSnapshot(doc(db, "rlm_settings", "instruments"), (docSnap) => {
+                    if (docSnap.exists() && docSnap.data().list) { window.activeInstruments = docSnap.data().list; } 
+                    else { setDoc(doc(db, "rlm_settings", "instruments"), { list: defaultInstruments }).catch(e => console.warn(e)); }
+                    window.renderInstrumentsAdmin();
+                    // Refrescar vistas en caso de que estén abiertas
+                    window.updateSelectionView();
+                    if(window.editingRepertoireId) window.updateAdminRepPreview();
+                }, (error) => console.warn("Error cargando instrumentos:", error));
             }
         });
 
@@ -964,7 +981,7 @@
                 window.orderedSelection.splice(existingIndex, 1);
             } else {
                 const song = window.songs.find(s => s.id === id);
-                window.orderedSelection.push({...song, isCustom: false, note: ""});
+                window.orderedSelection.push({...song, isCustom: false, note: "", instruments: []});
                 updateDoc(doc(db, "rlm_songs", id), { clicks: increment(1) }).catch(e=>console.warn("Click track error", e));
             }
             window.renderGrid();
@@ -975,7 +992,7 @@
             const input = document.getElementById('customSongInput');
             const val = input.value.trim();
             if(!val) return;
-            window.orderedSelection.push({ id: 'custom_' + Date.now(), titulo: val, ref: 'Petición Especial', isCustom: true, note: "" });
+            window.orderedSelection.push({ id: 'custom_' + Date.now(), titulo: val, ref: 'Petición Especial', isCustom: true, note: "", instruments: [] });
             input.value = '';
             window.updateSelectionView();
             document.getElementById('selectionSection').scrollIntoView({ behavior: 'smooth' });
@@ -1009,6 +1026,14 @@
             window.orderedSelection[index].note = value;
         };
 
+        window.toggleSongInstrument = (index, inst) => {
+            if (!window.orderedSelection[index].instruments) window.orderedSelection[index].instruments = [];
+            const arr = window.orderedSelection[index].instruments;
+            const i = arr.indexOf(inst);
+            if (i > -1) arr.splice(i, 1); else arr.push(inst);
+            window.updateSelectionView();
+        };
+
         window.updateSelectionView = () => {
             const section = document.getElementById('selectionSection');
             const list = document.getElementById('selectedSongsList');
@@ -1033,7 +1058,18 @@
                     <div class="flex-1 min-w-0">
                         <span class="font-bold text-neutral-800 block break-words leading-relaxed pb-0.5">${s.titulo}</span>
                         ${s.isCustom ? `<span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider inline-block mb-1">Especial</span>` : `<span class="text-neutral-500 text-xs block break-words leading-snug mb-1">${s.ref}</span>`}
-                        <input type="text" placeholder="Añade una nota (ej. Entrada de la novia)" value="${s.note || ''}" onchange="window.updateSongNote(${index}, this.value)" class="w-full mt-1 text-[11px] bg-neutral-50 border border-neutral-200 rounded px-2 py-1.5 text-neutral-700 outline-none focus:border-amber-400 placeholder-neutral-400 transition-colors">
+                        
+                        <div class="instrument-pills-container mt-1 flex flex-wrap gap-1.5">
+                            ${window.activeInstruments.map(inst => {
+                                const selected = s.instruments && s.instruments.includes(inst);
+                                return `<button onclick="window.toggleSongInstrument(${index}, '${inst}')" 
+                                            class="text-[9px] px-2 py-0.5 rounded-full border ${selected ? 'bg-amber-500/20 text-amber-700 border-amber-500/50 font-bold' : 'bg-transparent border-neutral-200 text-neutral-400 hover:border-amber-300'} transition-colors">
+                                        ${inst}
+                                    </button>`;
+                            }).join('')}
+                        </div>
+
+                        <input type="text" placeholder="Añade una nota (ej. Entrada de la novia)" value="${s.note || ''}" onchange="window.updateSongNote(${index}, this.value)" class="w-full mt-2 text-[11px] bg-neutral-50 border border-neutral-200 rounded px-2 py-1.5 text-neutral-700 outline-none focus:border-amber-400 placeholder-neutral-400 transition-colors">
                     </div>
                     ${s.isCustom ? `<button onclick="window.editCustomSong(${index})" class="text-neutral-400 hover:text-amber-500 p-2 mt-0.5 transition-colors flex-shrink-0" title="Editar"><i data-lucide="pencil" class="w-4 h-4"></i></button>` : ''}
                     <button onclick="window.removeSelected(${index})" class="text-neutral-300 hover:text-red-500 p-2 mt-0.5 transition-colors flex-shrink-0"><i data-lucide="x" class="w-4 h-4"></i></button>
@@ -1086,7 +1122,7 @@
                 try {
                     await addDoc(collection(db, "rlm_repertoires"), {
                         clientName: cName, clientPhone: cPhone, eventType: cEventType, clientDate: cDate, comments: cComments,
-                        songs: window.orderedSelection.map(s => ({ titulo: s.titulo, ref: s.ref, isCustom: s.isCustom || false, note: s.note || "" })),
+                        songs: window.orderedSelection.map(s => ({ titulo: s.titulo, ref: s.ref, isCustom: s.isCustom || false, note: s.note || "", instruments: s.instruments || [] })),
                         timestamp: new Date().toISOString()
                     });
                 } catch (e) { console.error("Error guardar rep:", e); }
@@ -1098,25 +1134,40 @@
             const noCaptureElements = element.querySelectorAll('.cursor-grab, button');
             noCaptureElements.forEach(el => el.style.opacity = '0');
             
+            const replacedElements = [];
+            
             // Format notes for print
             const inputNotes = element.querySelectorAll('input[type="text"]');
-            const replacedNotes = [];
             inputNotes.forEach(inp => {
                 if(inp.value.trim() !== "") {
                     const div = document.createElement('div');
                     div.className = "text-[11px] text-amber-700 italic mt-1 font-semibold";
                     div.innerText = "Nota: " + inp.value;
                     inp.parentNode.insertBefore(div, inp);
-                    replacedNotes.push({ input: inp, div: div });
+                    replacedElements.push({ input: inp, div: div });
                 }
                 inp.style.display = 'none';
+            });
+
+            // Format instruments for print
+            const pillContainers = element.querySelectorAll('.instrument-pills-container');
+            pillContainers.forEach(container => {
+                const selected = Array.from(container.querySelectorAll('.bg-amber-500\\/20')).map(b => b.innerText);
+                if(selected.length > 0) {
+                    const div = document.createElement('div');
+                    div.className = "text-[10px] text-amber-600 mt-1 font-bold";
+                    div.innerText = "Instrumentos: " + selected.join(', ');
+                    container.parentNode.insertBefore(div, container);
+                    replacedElements.push({ input: container, div: div });
+                }
+                container.style.display = 'none';
             });
 
             document.fonts.ready.then(() => {
                 setTimeout(() => {
                     html2canvas(element, { scale: 2, backgroundColor: "#ffffff", useCORS: true, logging: false }).then(canvas => {
                         noCaptureElements.forEach(el => el.style.opacity = '1');
-                        replacedNotes.forEach(rn => { rn.input.style.display = ''; rn.div.remove(); });
+                        replacedElements.forEach(rn => { rn.input.style.display = ''; rn.div.remove(); });
                         inputNotes.forEach(inp => inp.style.display = '');
                         infoBox.classList.add('hidden'); 
                         
@@ -1165,6 +1216,7 @@
                 
                 window.loadAdminSettings();
                 window.renderGenresAdmin();
+                window.renderInstrumentsAdmin();
                 window.renderGenreCheckboxes();
                 window.renderAdminList();
                 window.startAdminListeners();
@@ -1274,6 +1326,35 @@
                     ${m}
                 </label>
             `).join('');
+        };
+
+        // --- Instrumentos CRUD ---
+        window.renderInstrumentsAdmin = () => {
+            const list = document.getElementById('instrumentsAdminList');
+            if(!list) return;
+            list.innerHTML = window.activeInstruments.map((m, index) => `
+                <div class="bg-zinc-800 text-neutral-200 text-xs px-3 py-1.5 rounded-full flex items-center gap-2 border border-white/10">
+                    <span>${m}</span>
+                    <button onclick="window.deleteInstrument(${index})" class="text-red-400 hover:text-red-300"><i data-lucide="x" class="w-3 h-3"></i></button>
+                </div>
+            `).join('');
+            if(window.lucide) window.lucide.createIcons();
+        };
+
+        window.addInstrument = async () => {
+            const val = document.getElementById('newInstrumentInput').value.trim();
+            if(!val || window.activeInstruments.includes(val)) return;
+            const newArray = [...window.activeInstruments, val];
+            await setDoc(doc(db, "rlm_settings", "instruments"), { list: newArray });
+            document.getElementById('newInstrumentInput').value = '';
+        };
+
+        window.deleteInstrument = async (index) => {
+            if(confirm("¿Eliminar este instrumento? Se quitará de las opciones para seleccionar.")) {
+                const newArray = [...window.activeInstruments];
+                newArray.splice(index, 1);
+                await setDoc(doc(db, "rlm_settings", "instruments"), { list: newArray });
+            }
         };
 
         // --- Tab 2: Catálogo CRUD ---
@@ -1426,6 +1507,14 @@
         };
 
         // Admin internal reorder logic
+        window.toggleAdminSongInstrument = (index, inst) => {
+            if (!window.editingRepertoireSongs[index].instruments) window.editingRepertoireSongs[index].instruments = [];
+            const arr = window.editingRepertoireSongs[index].instruments;
+            const i = arr.indexOf(inst);
+            if (i > -1) arr.splice(i, 1); else arr.push(inst);
+            window.updateAdminRepPreview();
+        };
+
         window.updateAdminRepPreview = () => {
             const list = document.getElementById('adminRepSongsList');
             const visualList = document.getElementById('adminSelectedSongsList');
@@ -1443,7 +1532,17 @@
                         <span class="font-bold text-neutral-200 block text-xs truncate">${s.titulo}</span>
                         ${s.isCustom ? `<span class="text-[9px] bg-amber-900/30 text-amber-500 px-1.5 py-0.5 rounded uppercase inline-block mb-1">Especial</span>` : `<span class="text-neutral-500 text-[10px] block truncate mb-1">${s.ref}</span>`}
                         
-                        <input type="text" placeholder="Nota..." value="${s.note || ''}" onchange="window.updateAdminSongNote(${index}, this.value)" class="w-full mt-1 text-[10px] bg-zinc-900 border border-white/10 rounded px-2 py-1 text-neutral-300 outline-none focus:border-amber-500">
+                        <div class="admin-instrument-pills-container mt-1 flex flex-wrap gap-1.5">
+                            ${window.activeInstruments.map(inst => {
+                                const selected = s.instruments && s.instruments.includes(inst);
+                                return `<button onclick="window.toggleAdminSongInstrument(${index}, '${inst}')" 
+                                            class="text-[9px] px-1.5 py-0.5 rounded border ${selected ? 'bg-amber-500/20 text-amber-500 border-amber-500/50 font-bold' : 'bg-transparent border-white/10 text-neutral-500 hover:border-amber-500/30'} transition-colors">
+                                        ${inst}
+                                    </button>`;
+                            }).join('')}
+                        </div>
+
+                        <input type="text" placeholder="Nota..." value="${s.note || ''}" onchange="window.updateAdminSongNote(${index}, this.value)" class="w-full mt-2 text-[10px] bg-zinc-900 border border-white/10 rounded px-2 py-1 text-neutral-300 outline-none focus:border-amber-500">
                     </div>
                     <button onclick="window.removeAdminRepSong(${index})" class="text-neutral-500 hover:text-red-400 p-1 mt-0.5 transition-colors flex-shrink-0"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
                 </li>
@@ -1473,17 +1572,20 @@
             document.getElementById('adminCaptureSongsCount').innerText = `${window.editingRepertoireSongs.length} Piezas`;
             document.getElementById('adminCaptureTime').innerText = `Aprox. ${totalMins} Minutos`;
 
-            // Render songs for screenshot
-            visualList.innerHTML = window.editingRepertoireSongs.map((s, index) => `
+            // Render songs for screenshot (Admin view)
+            visualList.innerHTML = window.editingRepertoireSongs.map((s, index) => {
+                const instText = (s.instruments && s.instruments.length > 0) ? `<div class="text-[10px] text-amber-600 mt-1 font-bold">Inst: ${s.instruments.join(', ')}</div>` : '';
+                return `
                 <li class="flex items-start gap-3 border-b border-neutral-100 py-2">
                     <div class="text-xs text-neutral-400 font-mono w-4 mt-1 flex-shrink-0">${index + 1}.</div>
                     <div class="flex-1 min-w-0 py-1">
                         <span class="font-bold text-neutral-800 block break-words leading-relaxed pb-0.5">${s.titulo}</span>
                         ${s.isCustom ? `<span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider inline-block mb-1">Especial</span>` : `<span class="text-neutral-500 text-xs block break-words leading-snug mb-1">${s.ref}</span>`}
+                        ${instText}
                         ${s.note ? `<div class="text-[11px] text-amber-700 italic mt-1 font-semibold">Nota: ${s.note}</div>` : ''}
                     </div>
                 </li>
-            `).join('');
+            `}).join('');
 
             if(window.lucide) window.lucide.createIcons();
         };
@@ -1493,7 +1595,7 @@
         window.addAdminRepSong = () => {
             const input = document.getElementById('adminRepCustomSong');
             if(!input.value.trim()) return;
-            window.editingRepertoireSongs.push({ id: 'c_'+Date.now(), titulo: input.value.trim(), ref: 'Petición Especial', isCustom: true, note: "" });
+            window.editingRepertoireSongs.push({ id: 'c_'+Date.now(), titulo: input.value.trim(), ref: 'Petición Especial', isCustom: true, note: "", instruments: [] });
             input.value = '';
             window.updateAdminRepPreview();
         };
@@ -1558,9 +1660,14 @@
 
         // Export Repertoires CSV
         window.exportRepertoiresCSV = () => {
-            let csvContent = "Cliente,Telefono,Tipo de Evento,Fecha Evento,Comentarios,Fecha Registro,Canciones (con notas)\n";
+            let csvContent = "Cliente,Telefono,Tipo de Evento,Fecha Evento,Comentarios,Fecha Registro,Canciones (Detalles)\n";
             window.repertoires.forEach(r => {
-                const songsList = (r.songs || []).map(s => `${s.titulo}${s.note ? ` [${s.note}]` : ''}`).join(" | ");
+                const songsList = (r.songs || []).map(s => {
+                    let text = s.titulo;
+                    if(s.note) text += ` [Nota: ${s.note}]`;
+                    if(s.instruments && s.instruments.length > 0) text += ` (Inst: ${s.instruments.join(', ')})`;
+                    return text;
+                }).join(" | ");
                 csvContent += `${escapeCSV(r.clientName)},${escapeCSV(r.clientPhone)},${escapeCSV(r.eventType)},${escapeCSV(r.clientDate)},${escapeCSV(r.comments)},${escapeCSV(r.timestamp)},${escapeCSV(songsList)}\n`;
             });
             const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
