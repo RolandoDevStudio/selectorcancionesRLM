@@ -683,7 +683,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc, setDoc, getDocs, updateDoc, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAHc_iwOzveVV13qbQljbB9GC029cIhVkY",
@@ -1209,20 +1209,29 @@
 
         window.checkAdminPass = () => {
             const pass = document.getElementById('adminPass').value;
-            if (pass === 'rch29389') {
-                document.getElementById('adminAuth').classList.add('hidden');
-                document.getElementById('adminManager').classList.remove('hidden');
-                document.getElementById('adminTabsNav').classList.remove('hidden');
-                
-                window.loadAdminSettings();
-                window.renderGenresAdmin();
-                window.renderInstrumentsAdmin();
-                window.renderGenreCheckboxes();
-                window.renderAdminList();
-                window.startAdminListeners();
-            } else {
-                document.getElementById('loginError').classList.remove('hidden');
-            }
+            const email = 'rch338899@gmail.com'; // Tu correo de administrador
+            
+            // Autenticación segura con Firebase
+            signInWithEmailAndPassword(auth, email, pass)
+                .then((userCredential) => {
+                    // Inicio de sesión exitoso
+                    document.getElementById('adminAuth').classList.add('hidden');
+                    document.getElementById('adminManager').classList.remove('hidden');
+                    document.getElementById('adminTabsNav').classList.remove('hidden');
+                    document.getElementById('loginError').classList.add('hidden');
+                    
+                    window.loadAdminSettings();
+                    window.renderGenresAdmin();
+                    window.renderInstrumentsAdmin();
+                    window.renderGenreCheckboxes();
+                    window.renderAdminList();
+                    window.startAdminListeners();
+                })
+                .catch((error) => {
+                    // Contraseña incorrecta o error de red
+                    console.error("Error de autenticación:", error.message);
+                    document.getElementById('loginError').classList.remove('hidden');
+                });
         };
 
         window.switchAdminTab = (tabId, btnElement) => {
