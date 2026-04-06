@@ -5,22 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo | Rolando Live Music</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind Custom Theme Engine
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        amber: {
+                            400: 'var(--c-primary-light, #fbbf24)',
+                            500: 'var(--c-primary, #f59e0b)',
+                            600: 'var(--c-primary-dark, #d97706)'
+                        },
+                        zinc: {
+                            800: 'var(--c-card-hover, #27272a)',
+                            900: 'var(--c-card, #18181b)',
+                            950: 'var(--c-bg, #09090b)'
+                        },
+                        neutral: {
+                            200: 'var(--c-text, #e5e5e5)',
+                            300: 'var(--c-text-muted, #d4d4d8)',
+                            400: 'var(--c-text-muted-dark, #a1a1aa)',
+                            500: 'var(--c-text-muted-darker, #71717a)'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Librería para gráficas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
         
         :root {
-            --dark-bg: #09090b;
-            --gold: #d4af37;
-            --gold-light: #fbe599;
+            --dark-bg: var(--c-bg, #09090b);
+            --gold: var(--c-primary, #d4af37);
         }
         
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--dark-bg);
-            color: #e5e5e5;
+            color: var(--c-text, #e5e5e5);
             scroll-behavior: smooth;
         }
 
@@ -29,7 +55,6 @@
         /* Elegance & Parallax */
         .parallax-hero {
             background-color: var(--dark-bg);
-            background-image: linear-gradient(to bottom, rgba(9, 9, 11, 0.3), rgba(9, 9, 11, 1)), url('https://images.unsplash.com/photo-1520114002624-912b6f4cce28?q=80&w=2000&auto=format&fit=crop');
             background-attachment: fixed;
             background-position: center;
             background-size: cover;
@@ -48,7 +73,8 @@
         /* Selection & Drag Drop */
         .song-card.selected {
             border-color: rgba(212, 175, 55, 0.6);
-            background: linear-gradient(145deg, rgba(212, 175, 55, 0.1) 0%, rgba(9, 9, 11, 0) 100%);
+            border-color: var(--c-primary-light, rgba(212, 175, 55, 0.6));
+            background: linear-gradient(145deg, var(--c-primary-dark, rgba(212, 175, 55, 0.1)) 0%, transparent 100%);
         }
         
         .screenshot-area {
@@ -63,9 +89,9 @@
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #09090b; }
-        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+        ::-webkit-scrollbar-track { background: var(--c-bg, #09090b); }
+        ::-webkit-scrollbar-thumb { background: var(--c-card-hover, #3f3f46); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--c-text-muted-darker, #52525b); }
 
         .admin-modal {
             display: none;
@@ -92,10 +118,15 @@
         <div class="bg-zinc-900 border border-white/10 rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl animate-fade-in">
             <div class="flex justify-between items-center p-4 border-b border-white/10">
                 <h3 class="text-amber-500 font-bold font-serif flex items-center gap-2"><i data-lucide="play-circle" class="w-5 h-5"></i> Reproductor</h3>
-                <button onclick="window.closeMediaModal()" class="text-neutral-400 hover:text-white transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <div class="flex items-center gap-3">
+                    <a id="modalExternalLink" href="#" target="_blank" class="text-[10px] uppercase font-bold tracking-wider bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full text-white flex items-center gap-1 transition-colors">
+                        <i data-lucide="external-link" class="w-3 h-3"></i> Abrir original
+                    </a>
+                    <button onclick="window.closeMediaModal()" class="text-neutral-400 hover:text-white transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+                </div>
             </div>
-            <div class="p-4 aspect-video relative w-full flex justify-center items-center bg-black">
-                <iframe id="mediaIframe" class="w-full h-full rounded-xl shadow-lg border-0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            <div id="iframeContainer" class="p-4 aspect-video relative w-full flex justify-center items-center bg-black">
+                <iframe id="mediaIframe" class="w-full h-full rounded-xl shadow-lg border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"></iframe>
             </div>
         </div>
     </div>
@@ -107,19 +138,17 @@
                 <div class="relative group">
                     <div class="absolute inset-0 rounded-full bg-amber-500/20 blur-xl group-hover:bg-amber-500/30 transition-all duration-700"></div>
                     <img src="https://i.ibb.co/gM83nXf3/Gemini-Generated-Image-c8zfwsc8zfwsc8zf.png" 
-                         alt="Rolando Live Music" 
+                         alt="Logo Principal" 
                          id="heroImageEl"
                          class="w-40 h-40 rounded-full object-cover border-[3px] border-amber-500 shadow-2xl relative z-10 transition-transform duration-700 hover:scale-105"
                          crossorigin="anonymous">
                 </div>
             </div>
-            <h1 class="text-5xl md:text-7xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 mb-4 tracking-tight drop-shadow-sm">
+            <h1 id="heroMainTitle" class="text-5xl md:text-7xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 mb-4 tracking-tight drop-shadow-sm">
                 Rolando Live Music
             </h1>
-            <div class="flex items-center justify-center gap-3 text-neutral-300 tracking-[0.2em] uppercase text-xs font-medium mb-8">
-                <span>Bodas</span> <span class="text-amber-500">•</span> 
-                <span>Cenas</span> <span class="text-amber-500">•</span> 
-                <span>Aniversarios</span>
+            <div id="heroSubTitle" class="text-neutral-300 tracking-[0.2em] uppercase text-xs font-medium mb-8">
+                Bodas • Cenas • Aniversarios
             </div>
             
             <div id="headerSocials" class="flex justify-center gap-5 mt-6"></div>
@@ -180,13 +209,13 @@
 
                     <input type="date" id="clientDate" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none text-neutral-400 transition-colors">
                 </div>
-                <textarea id="clientComments" rows="2" placeholder="Comentarios o indicaciones especiales para Rolando..." class="w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none resize-none transition-colors"></textarea>
+                <textarea id="clientComments" rows="2" placeholder="Comentarios o indicaciones generales para Rolando..." class="w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none resize-none transition-colors"></textarea>
             </div>
 
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 gap-4">
                 <div>
                     <h2 class="text-3xl font-serif text-amber-500 mb-1">Tu Repertorio</h2>
-                    <p class="text-neutral-400 text-sm mb-2">Arrastra las canciones para cambiar el orden exacto.</p>
+                    <p class="text-neutral-400 text-sm mb-2">Arrastra las canciones para cambiar el orden exacto y añade notas si lo deseas.</p>
                     <div class="inline-flex items-center gap-2 bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3 py-1.5 rounded-lg text-sm font-medium">
                         <i data-lucide="timer" class="w-4 h-4"></i>
                         <span id="timeEstimator">0 min aprox de música</span>
@@ -205,7 +234,7 @@
                     <div class="flex items-center gap-4">
                         <img src="" id="captureLogo" class="w-14 h-14 rounded-full border-2 border-amber-600 shadow-md object-cover" crossorigin="anonymous">
                         <div>
-                            <p class="font-serif font-bold text-2xl leading-none text-neutral-900">Rolando Live Music</p>
+                            <p id="captureMainTitle" class="font-serif font-bold text-2xl leading-none text-neutral-900">Rolando Live Music</p>
                             <p class="text-xs text-amber-600 uppercase tracking-widest font-semibold mt-1">Selección de Canciones/Piezas</p>
                         </div>
                     </div>
@@ -228,7 +257,7 @@
                     </div>
                 </div>
 
-                <ul id="selectedSongsList" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-base text-neutral-800">
+                <ul id="selectedSongsList" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-base text-neutral-800">
                     <!-- Selected songs appear here with Drag & Drop -->
                 </ul>
                 
@@ -244,7 +273,7 @@
                 <i data-lucide="music" class="text-amber-500 w-5 h-5"></i>
                 <h3 class="font-serif text-xl text-amber-50">¿No encuentras una canción especial?</h3>
             </div>
-            <p class="text-sm text-neutral-400 mb-4">Escríbe el nombre y artista de la cancion/pieza y la revisaremos con gusto.</p>
+            <p class="text-sm text-neutral-400 mb-4">Escribe el nombre y artista de la cancion/pieza y la revisaremos con gusto.</p>
             <div class="flex gap-3">
                 <input type="text" id="customSongInput" placeholder="Ej. A Thousand Years - Christina Perri" 
                        class="flex-1 bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none transition-colors">
@@ -257,7 +286,7 @@
 
     <!-- Footer -->
     <footer class="py-16 px-6 text-center border-t border-white/5 bg-black/50 relative">
-        <p class="font-serif text-xl text-amber-500 mb-4">Rolando Live Music</p>
+        <p id="footerMainTitle" class="font-serif text-xl text-amber-500 mb-4">Rolando Live Music</p>
         <div id="footerSocials" class="flex justify-center gap-6 mb-8 text-neutral-400"></div>
         <p class="text-neutral-600 text-xs">Monterrey, N.L. • Elegancia y sofisticación musical.</p>
         
@@ -301,16 +330,56 @@
                 <!-- Management Screen (Tabs Container) -->
                 <div id="adminManager" class="hidden">
                     
-                    <!-- TAB 1: Settings & Genres -->
+                    <!-- TAB 1: Settings & Colors -->
                     <div id="tabSettings" class="admin-tab active space-y-8">
                         <section class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
-                            <h3 class="text-sm font-bold uppercase text-amber-500 mb-6 tracking-widest">Configuración General y Contacto</h3>
+                            <h3 class="text-sm font-bold uppercase text-amber-500 mb-6 tracking-widest">Apariencia y Colores</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                                <div>
+                                    <label class="text-xs text-neutral-500 mb-1 block">Color Principal</label>
+                                    <div class="flex items-center gap-2 bg-zinc-900 border border-white/10 rounded-lg p-2">
+                                        <input type="color" id="setColorPrimary" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0 p-0" value="#f59e0b">
+                                        <span class="text-xs text-neutral-300 font-mono" id="hexPrimary">#f59e0b</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-neutral-500 mb-1 block">Color de Fondo</label>
+                                    <div class="flex items-center gap-2 bg-zinc-900 border border-white/10 rounded-lg p-2">
+                                        <input type="color" id="setColorBg" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0 p-0" value="#09090b">
+                                        <span class="text-xs text-neutral-300 font-mono" id="hexBg">#09090b</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-neutral-500 mb-1 block">Color Tarjetas</label>
+                                    <div class="flex items-center gap-2 bg-zinc-900 border border-white/10 rounded-lg p-2">
+                                        <input type="color" id="setColorCard" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0 p-0" value="#18181b">
+                                        <span class="text-xs text-neutral-300 font-mono" id="hexCard">#18181b</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-neutral-500 mb-1 block">Color Textos</label>
+                                    <div class="flex items-center gap-2 bg-zinc-900 border border-white/10 rounded-lg p-2">
+                                        <input type="color" id="setColorText" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0 p-0" value="#e5e5e5">
+                                        <span class="text-xs text-neutral-300 font-mono" id="hexText">#e5e5e5</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-sm font-bold uppercase text-amber-500 mb-4 mt-8 tracking-widest">Textos e Imágenes de Marca</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="md:col-span-2">
+                                    <label class="text-xs text-neutral-500 mb-1 block">Título Principal (Hero)</label>
+                                    <input type="text" id="setMainTitle" class="w-full bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm focus:border-amber-500 outline-none text-neutral-200" placeholder="Ej. Rolando Live Music">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="text-xs text-neutral-500 mb-1 block">Subtítulo (Categorías)</label>
+                                    <input type="text" id="setSubTitle" class="w-full bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm focus:border-amber-500 outline-none text-neutral-200" placeholder="Ej. Bodas • Cenas • Aniversarios">
+                                </div>
+                                <div class="md:col-span-1">
                                     <label class="text-xs text-neutral-500 mb-1 block">URL Imagen del Logo (Circular)</label>
                                     <input type="text" id="setLogoImg" class="w-full bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm focus:border-amber-500 outline-none text-neutral-200" placeholder="https://...">
                                 </div>
-                                <div class="md:col-span-2">
+                                <div class="md:col-span-1">
                                     <label class="text-xs text-neutral-500 mb-1 block">URL Imagen de Fondo (Hero Banner)</label>
                                     <input type="text" id="setHeroBgImg" class="w-full bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm focus:border-amber-500 outline-none text-neutral-200" placeholder="https://...">
                                 </div>
@@ -331,7 +400,7 @@
                                     <input type="text" id="setTk" class="w-full bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm focus:border-amber-500 outline-none text-neutral-200">
                                 </div>
                             </div>
-                            <button onclick="window.saveAdminSettings(event)" class="mt-5 w-full bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl p-3 text-sm font-semibold transition-colors border border-white/5">Guardar Configuración</button>
+                            <button onclick="window.saveAdminSettings(event)" class="mt-5 w-full bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl p-3 text-sm font-semibold transition-colors border border-white/5">Guardar Configuración y Colores</button>
                         </section>
 
                         <section class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
@@ -401,9 +470,11 @@
                         </section>
                     </div>
 
-                    <!-- TAB 3: Repertoires (Clients CRM) -->
+                    <!-- TAB 3: Repertoires (Clients CRM & Editor) -->
                     <div id="tabRepertoires" class="admin-tab space-y-8">
-                        <section>
+                        
+                        <!-- List of Repertoires View -->
+                        <section id="repertoiresListSection">
                             <div class="flex justify-between items-end mb-4">
                                 <h3 class="text-sm font-bold uppercase text-amber-500 tracking-widest">Repertorios Solicitados por Clientes</h3>
                                 <button onclick="window.exportRepertoiresCSV()" class="text-xs bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded text-neutral-300 border border-white/10 transition-colors flex items-center gap-1">
@@ -420,6 +491,110 @@
 
                             <div id="repertoiresAdminList" class="space-y-1 border border-white/5 p-2 rounded-xl bg-zinc-900/10 min-h-[300px] max-h-[600px] overflow-y-auto custom-scrollbar">
                                 <!-- List populated via JS -->
+                            </div>
+                        </section>
+
+                        <!-- Repertoire Editor View -->
+                        <section id="repertoireEditorSection" class="hidden">
+                            <div class="flex items-center gap-4 mb-6">
+                                <button onclick="window.closeAdminRepEditor()" class="bg-zinc-800 hover:bg-zinc-700 text-white p-2 rounded-lg transition-colors"><i data-lucide="arrow-left" class="w-4 h-4"></i></button>
+                                <div>
+                                    <h3 class="text-sm font-bold uppercase text-amber-500 tracking-widest">Editor de Repertorio</h3>
+                                    <p class="text-xs text-neutral-500">Modifica y descarga la imagen para el cliente.</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <!-- Edit Form -->
+                                <div>
+                                    <div class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5 mb-6">
+                                        <h4 class="text-sm font-bold text-neutral-300 mb-4">Datos del Cliente</h4>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                                            <input type="text" id="adminRepName" placeholder="Nombre completo" class="bg-zinc-900 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-amber-500/50 outline-none" onchange="window.updateAdminRepPreview()">
+                                            <input type="tel" id="adminRepPhone" placeholder="Teléfono" class="bg-zinc-900 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-amber-500/50 outline-none" onchange="window.updateAdminRepPreview()">
+                                            <select id="adminRepEventType" class="bg-zinc-900 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-amber-500/50 outline-none text-neutral-200" onchange="window.updateAdminRepPreview()">
+                                                <option value="" disabled selected>Tipo de Evento</option>
+                                                <option value="Boda">Boda</option>
+                                                <option value="XV Años">XV Años</option>
+                                                <option value="Propuesta de Matrimonio">Propuesta de Matrimonio</option>
+                                                <option value="Propuesta de Noviazgo">Propuesta de Noviazgo</option>
+                                                <option value="Despedida de Soltera">Despedida de Soltera</option>
+                                                <option value="Cena Romántica">Cena Romántica</option>
+                                                <option value="Aniversario">Aniversario</option>
+                                                <option value="Evento Corporativo">Evento Corporativo</option>
+                                                <option value="Otro">Otro</option>
+                                            </select>
+                                            <input type="date" id="adminRepDate" class="bg-zinc-900 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-amber-500/50 outline-none text-neutral-200" onchange="window.updateAdminRepPreview()">
+                                        </div>
+                                        <textarea id="adminRepComments" rows="2" placeholder="Comentarios generales..." class="w-full bg-zinc-900 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-amber-500/50 outline-none resize-none" onchange="window.updateAdminRepPreview()"></textarea>
+                                    </div>
+
+                                    <div class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
+                                        <div class="flex justify-between items-center mb-4">
+                                            <h4 class="text-sm font-bold text-neutral-300">Piezas Elegidas</h4>
+                                            <span class="text-xs bg-amber-500/10 text-amber-500 px-2 py-1 rounded font-mono" id="adminRepCount">0 piezas</span>
+                                        </div>
+                                        
+                                        <div class="flex gap-2 mb-4">
+                                            <input type="text" id="adminRepCustomSong" placeholder="Añadir canción (Título - Artista)" class="flex-1 bg-zinc-900 border border-white/10 rounded-lg px-3 py-2 text-xs focus:border-amber-500/50 outline-none">
+                                            <button onclick="window.addAdminRepSong()" class="bg-zinc-800 hover:bg-zinc-700 text-white px-3 rounded-lg transition-colors"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                                        </div>
+
+                                        <ul id="adminRepSongsList" class="space-y-2 mb-6 max-h-80 overflow-y-auto custom-scrollbar pr-2">
+                                            <!-- Dynamically populated edit list -->
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Image Preview & Download -->
+                                <div>
+                                    <div class="flex gap-2 mb-4">
+                                        <button onclick="window.saveAdminRepertoire()" id="adminRepSaveBtn" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white transition-colors px-4 py-3 rounded-xl font-bold flex justify-center items-center gap-2 border border-white/10">
+                                            <i data-lucide="save" class="w-4 h-4"></i> Guardar Cambios en BD
+                                        </button>
+                                        <button onclick="window.downloadAdminRepertoireImage()" id="adminRepDownloadBtn" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white transition-colors px-4 py-3 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg shadow-amber-900/20">
+                                            <i data-lucide="image-down" class="w-4 h-4"></i> Descargar Imagen
+                                        </button>
+                                    </div>
+
+                                    <p class="text-xs text-neutral-500 mb-2">Vista previa de la imagen:</p>
+                                    <!-- This is an exact visual replica of the captureArea for the Admin to generate images -->
+                                    <div class="w-full overflow-hidden rounded-xl border border-white/10">
+                                        <div style="transform: scale(0.65); transform-origin: top left; width: 153.84%;" class="bg-white pb-8">
+                                            <div id="adminCaptureArea" class="p-8 screenshot-area relative bg-white">
+                                                <div class="flex items-center justify-between border-b border-neutral-200 pb-6 mb-6">
+                                                    <div class="flex items-center gap-4">
+                                                        <img src="" id="adminCaptureLogo" class="w-14 h-14 rounded-full border-2 border-amber-600 shadow-md object-cover" crossorigin="anonymous">
+                                                        <div>
+                                                            <p id="adminCaptureMainTitle" class="font-serif font-bold text-2xl leading-none text-neutral-900">Rolando Live Music</p>
+                                                            <p class="text-xs text-amber-600 uppercase tracking-widest font-semibold mt-1">Selección de Canciones/Piezas</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-right">
+                                                        <p id="adminCaptureTime" class="text-xs font-bold text-neutral-400 uppercase tracking-wider"></p>
+                                                        <p id="adminCaptureSongsCount" class="text-neutral-900 font-serif font-bold text-xl"></p>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div id="adminCaptureClientInfo" class="hidden mb-6 bg-neutral-50 border border-neutral-200 p-4 rounded-xl flex flex-col gap-2 text-sm text-neutral-700">
+                                                    <div class="grid grid-cols-4 gap-4 w-full border-b border-neutral-200 pb-2 mb-1">
+                                                        <div><span class="font-bold text-neutral-900 block text-xs uppercase tracking-wider text-neutral-400">Cliente</span> <span id="adminPrintName" class="font-medium"></span></div>
+                                                        <div><span class="font-bold text-neutral-900 block text-xs uppercase tracking-wider text-neutral-400">Teléfono</span> <span id="adminPrintPhone" class="font-medium"></span></div>
+                                                        <div><span class="font-bold text-neutral-900 block text-xs uppercase tracking-wider text-neutral-400">Evento</span> <span id="adminPrintEventType" class="font-medium text-amber-600"></span></div>
+                                                        <div><span class="font-bold text-neutral-900 block text-xs uppercase tracking-wider text-neutral-400">Fecha</span> <span id="adminPrintDate" class="font-medium"></span></div>
+                                                    </div>
+                                                    <div id="adminPrintCommentsBox" class="hidden pt-1">
+                                                        <span class="font-bold text-neutral-900 text-xs uppercase tracking-wider text-neutral-400 block mb-1">Indicaciones</span> <span id="adminPrintComments" class="italic text-neutral-600"></span>
+                                                    </div>
+                                                </div>
+
+                                                <ul id="adminSelectedSongsList" class="grid grid-cols-2 gap-x-8 gap-y-3 text-base text-neutral-800">
+                                                    <!-- Dynamic -->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </section>
                     </div>
@@ -516,12 +691,18 @@
         // --- Defaults ---
         const defaultGenres = ["Pop", "Jazz & Bossa Nova", "Clásico", "Baladas", "Boleros", "Música Latina", "Cine y Soundtracks", "Lounge"];
         const defaultSettings = {
+            mainTitle: "Rolando Live Music",
+            subTitle: "Bodas • Cenas • Aniversarios",
             wa: "8110474854",
             ig: "https://www.instagram.com/rolandolivemusic/",
             fb: "https://www.facebook.com/rolandolivemusic",
             tk: "https://www.tiktok.com/@rolandolivemusic",
             logoImage: "https://i.ibb.co/gM83nXf3/Gemini-Generated-Image-c8zfwsc8zfwsc8zf.png",
-            heroBgImage: "https://images.unsplash.com/photo-1520114002624-912b6f4cce28?q=80&w=2000&auto=format&fit=crop"
+            heroBgImage: "https://images.unsplash.com/photo-1520114002624-912b6f4cce28?q=80&w=2000&auto=format&fit=crop",
+            colorPrimary: "#d4af37",
+            colorBg: "#09090b",
+            colorCard: "#18181b",
+            colorText: "#e5e5e5"
         };
 
         // --- State ---
@@ -529,8 +710,12 @@
         window.repertoires = [];
         window.siteSettings = defaultSettings;
         window.activeGenres = defaultGenres;
-        window.orderedSelection = []; 
-        window.dragStartIndex = null;
+        
+        window.orderedSelection = []; // Client selection
+        
+        window.editingRepertoireId = null; 
+        window.editingRepertoireSongs = []; // Admin editor selection
+
         window.editingSongId = null;
         window.adminListenersStarted = false;
 
@@ -539,13 +724,41 @@
         let chartInstanceClicks = null;
         let chartInstanceRepertoires = null;
         window.activeTopFilter = 10;
-        window.activeDaysFilter = 0; // 0 = all
+        window.activeDaysFilter = 0;
 
         const iconsSVG = {
             ig: `<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>`,
             fb: `<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>`,
             wa: `<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
             tk: `<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>`
+        };
+
+        // --- Color Helper ---
+        function shadeHexColor(color, percent) {
+            let f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
+            return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
+        }
+
+        window.applyColors = () => {
+            const root = document.documentElement;
+            if(window.siteSettings.colorPrimary) {
+                root.style.setProperty('--c-primary', window.siteSettings.colorPrimary);
+                root.style.setProperty('--c-primary-light', shadeHexColor(window.siteSettings.colorPrimary, 0.2));
+                root.style.setProperty('--c-primary-dark', shadeHexColor(window.siteSettings.colorPrimary, -0.2));
+            }
+            if(window.siteSettings.colorBg) {
+                root.style.setProperty('--c-bg', window.siteSettings.colorBg);
+            }
+            if(window.siteSettings.colorCard) {
+                root.style.setProperty('--c-card', window.siteSettings.colorCard);
+                root.style.setProperty('--c-card-hover', shadeHexColor(window.siteSettings.colorCard, 0.05));
+            }
+            if(window.siteSettings.colorText) {
+                root.style.setProperty('--c-text', window.siteSettings.colorText);
+                root.style.setProperty('--c-text-muted', shadeHexColor(window.siteSettings.colorText, -0.2));
+                root.style.setProperty('--c-text-muted-dark', shadeHexColor(window.siteSettings.colorText, -0.4));
+                root.style.setProperty('--c-text-muted-darker', shadeHexColor(window.siteSettings.colorText, -0.6));
+            }
         };
 
         // --- Firebase Auth & Init ---
@@ -555,10 +768,8 @@
             if (user) {
                 onSnapshot(collection(db, "rlm_songs"), (snapshot) => {
                     window.songs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    
                     document.getElementById('loadingState').classList.add('hidden');
                     document.getElementById('songGrid').classList.remove('hidden');
-                    
                     window.renderGrid();
                     if(!document.getElementById('adminManager').classList.contains('hidden')) {
                         window.renderAdminList();
@@ -574,13 +785,13 @@
                     } else {
                         setDoc(doc(db, "rlm_settings", "general"), defaultSettings).catch(e => console.warn(e));
                     }
+                    window.applyColors();
                     window.renderSiteVisuals();
                     if(!document.getElementById('adminManager').classList.contains('hidden')) {
                         window.loadAdminSettings();
                     }
                 }, (error) => console.warn("Error cargando ajustes:", error));
 
-                // Change to 'genres' doc
                 onSnapshot(doc(db, "rlm_settings", "genres"), (docSnap) => {
                     if (docSnap.exists() && docSnap.data().list) {
                         window.activeGenres = docSnap.data().list;
@@ -613,23 +824,38 @@
         // --- Media Embed Modal Logic ---
         window.openMediaModal = (event, url) => {
             event.stopPropagation();
-            let embedUrl = url;
+            let embedUrl = '';
+            try {
+                document.getElementById('modalExternalLink').href = url;
+                if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                    let videoId = '';
+                    if (url.includes('youtube.com/watch')) {
+                        const qs = url.split('?')[1];
+                        if (qs) { const params = new URLSearchParams(qs); videoId = params.get('v'); }
+                    } else if (url.includes('youtu.be/')) {
+                        videoId = url.split('youtu.be/')[1].split('?')[0];
+                    } else if (url.includes('youtube.com/shorts/')) {
+                        videoId = url.split('shorts/')[1].split('?')[0];
+                    }
+                    if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+                } else if (url.includes('spotify.com')) {
+                    const trackMatch = url.match(/track\/([a-zA-Z0-9]+)/);
+                    if (trackMatch && trackMatch[1]) {
+                        embedUrl = `https://open.spotify.com/embed/track/${trackMatch[1]}`;
+                    }
+                }
+                if (!embedUrl) { window.open(url, '_blank'); return; }
 
-            if (url.includes('youtube.com/watch?v=')) {
-                embedUrl = url.replace('watch?v=', 'embed/');
-                embedUrl = embedUrl.split('&')[0]; 
-            } else if (url.includes('youtu.be/')) {
-                const id = url.split('youtu.be/')[1].split('?')[0];
-                embedUrl = `https://www.youtube.com/embed/${id}`;
-            } else if (url.includes('open.spotify.com/track/')) {
-                embedUrl = url.replace('/track/', '/embed/track/');
-            } else if (!url.includes('spotify') && !url.includes('youtube')) {
-                window.open(url, '_blank');
-                return;
-            }
+                const iframeContainer = document.getElementById('iframeContainer');
+                if (embedUrl.includes('spotify')) {
+                    iframeContainer.className = 'p-4 relative w-full flex justify-center items-center bg-black min-h-[380px]';
+                } else {
+                    iframeContainer.className = 'p-4 aspect-video relative w-full flex justify-center items-center bg-black';
+                }
 
-            document.getElementById('mediaIframe').src = embedUrl;
-            document.getElementById('mediaModal').classList.remove('hidden');
+                document.getElementById('mediaIframe').src = embedUrl;
+                document.getElementById('mediaModal').classList.remove('hidden');
+            } catch(e) { window.open(url, '_blank'); }
         };
 
         window.closeMediaModal = () => {
@@ -651,17 +877,26 @@
                 ${createSocialHTML(iconsSVG.tk, window.siteSettings.tk, "text-neutral-400 hover:text-white")}
             `;
             
-            const waHref = window.siteSettings.wa.length === 10 ? `https://wa.me/52${window.siteSettings.wa}` : window.siteSettings.wa;
-            document.getElementById('floatingWaBtn').href = waHref;
+            const waHref = window.siteSettings.wa && window.siteSettings.wa.length === 10 ? `https://wa.me/52${window.siteSettings.wa}` : window.siteSettings.wa;
+            if (waHref) document.getElementById('floatingWaBtn').href = waHref;
 
             document.getElementById('headerSocials').innerHTML = linksHTML;
             document.getElementById('footerSocials').innerHTML = linksHTML;
 
+            if(window.siteSettings.mainTitle) {
+                document.getElementById('heroMainTitle').innerText = window.siteSettings.mainTitle;
+                document.getElementById('captureMainTitle').innerText = window.siteSettings.mainTitle;
+                document.getElementById('footerMainTitle').innerText = window.siteSettings.mainTitle;
+                document.getElementById('adminCaptureMainTitle').innerText = window.siteSettings.mainTitle;
+            }
+            if(window.siteSettings.subTitle) {
+                document.getElementById('heroSubTitle').innerText = window.siteSettings.subTitle;
+            }
             if(window.siteSettings.logoImage) {
                 document.getElementById('heroImageEl').src = window.siteSettings.logoImage;
                 document.getElementById('captureLogo').src = window.siteSettings.logoImage;
+                document.getElementById('adminCaptureLogo').src = window.siteSettings.logoImage;
             }
-            
             if(window.siteSettings.heroBgImage) {
                 document.getElementById('heroSection').style.backgroundImage = `linear-gradient(to bottom, rgba(9, 9, 11, 0.3), rgba(9, 9, 11, 1)), url('${window.siteSettings.heroBgImage}')`;
             }
@@ -670,9 +905,7 @@
         window.renderFilters = () => {
             const filter = document.getElementById('genreFilter');
             filter.innerHTML = '<option value="Todos">Filtrar por género musical...</option>';
-            window.activeGenres.forEach(g => {
-                filter.innerHTML += `<option value="${g}">${g}</option>`;
-            });
+            window.activeGenres.forEach(g => { filter.innerHTML += `<option value="${g}">${g}</option>`; });
         };
 
         const getGenresArray = (generoData) => {
@@ -724,14 +957,14 @@
             if(window.lucide) window.lucide.createIcons();
         };
 
-        // --- Selection & Clicks Logic ---
+        // --- Client Selection & Clicks Logic ---
         window.toggleCatalogSong = async (id) => {
             const existingIndex = window.orderedSelection.findIndex(s => s.id === id);
             if (existingIndex >= 0) {
                 window.orderedSelection.splice(existingIndex, 1);
             } else {
                 const song = window.songs.find(s => s.id === id);
-                window.orderedSelection.push({...song, isCustom: false});
+                window.orderedSelection.push({...song, isCustom: false, note: ""});
                 updateDoc(doc(db, "rlm_songs", id), { clicks: increment(1) }).catch(e=>console.warn("Click track error", e));
             }
             window.renderGrid();
@@ -742,13 +975,7 @@
             const input = document.getElementById('customSongInput');
             const val = input.value.trim();
             if(!val) return;
-
-            window.orderedSelection.push({
-                id: 'custom_' + Date.now(),
-                titulo: val,
-                ref: 'Petición Especial',
-                isCustom: true
-            });
+            window.orderedSelection.push({ id: 'custom_' + Date.now(), titulo: val, ref: 'Petición Especial', isCustom: true, note: "" });
             input.value = '';
             window.updateSelectionView();
             document.getElementById('selectionSection').scrollIntoView({ behavior: 'smooth' });
@@ -757,7 +984,6 @@
         window.editCustomSong = (index) => {
             const song = window.orderedSelection[index];
             if(!song.isCustom) return;
-
             const newTitle = prompt("Edita el título de la canción:", song.titulo);
             if(newTitle !== null && newTitle.trim() !== "") {
                 const newRef = prompt("Edita el artista o referencia (Opcional):", song.ref === "Petición Especial" ? "" : song.ref);
@@ -779,7 +1005,10 @@
             window.updateSelectionView();
         };
 
-        // --- Drag & Drop & Print View ---
+        window.updateSongNote = (index, value) => {
+            window.orderedSelection[index].note = value;
+        };
+
         window.updateSelectionView = () => {
             const section = document.getElementById('selectionSection');
             const list = document.getElementById('selectedSongsList');
@@ -787,58 +1016,37 @@
             const countDisplay = document.getElementById('captureSongsCount');
             const timeDisplay = document.getElementById('captureTime');
             
-            if (window.orderedSelection.length === 0) {
-                section.classList.add('hidden');
-                return;
-            }
-
+            if (window.orderedSelection.length === 0) { section.classList.add('hidden'); return; }
             section.classList.remove('hidden');
             
             const totalMins = Math.round(window.orderedSelection.length * 3.5);
             estimator.innerText = `${window.orderedSelection.length} piezas ≈ ${totalMins} mins de música`;
-            
             countDisplay.innerText = `${window.orderedSelection.length} Piezas`;
             timeDisplay.innerText = `Aprox. ${totalMins} Minutos`;
             
             list.innerHTML = window.orderedSelection.map((s, index) => `
                 <li draggable="true" 
-                    ondragstart="window.handleDragStart(event, ${index})" 
-                    ondragover="window.handleDragOver(event)" 
-                    ondragleave="window.handleDragLeave(event)" 
-                    ondrop="window.handleDrop(event, ${index})" 
-                    ondragend="window.handleDragEnd(event)"
-                    class="drag-item flex items-center gap-3 border-b border-neutral-100 py-2 bg-white hover:bg-neutral-50 px-2 rounded-lg">
-                    
-                    <div class="cursor-grab text-neutral-300 hover:text-amber-500 px-1 flex-shrink-0"><i data-lucide="grip-vertical" class="w-5 h-5"></i></div>
-                    <div class="text-xs text-neutral-400 font-mono w-4 flex-shrink-0">${index + 1}.</div>
-                    
-                    <div class="flex-1 min-w-0 py-1">
+                    ondragstart="window.handleDragStart(event, ${index})" ondragover="window.handleDragOver(event)" ondragleave="window.handleDragLeave(event)" ondrop="window.handleDrop(event, ${index})" ondragend="window.handleDragEnd(event)"
+                    class="drag-item flex items-start gap-3 border-b border-neutral-100 py-3 bg-white hover:bg-neutral-50 px-2 rounded-lg">
+                    <div class="cursor-grab text-neutral-300 hover:text-amber-500 px-1 mt-1 flex-shrink-0"><i data-lucide="grip-vertical" class="w-5 h-5"></i></div>
+                    <div class="text-xs text-neutral-400 font-mono w-4 mt-1 flex-shrink-0">${index + 1}.</div>
+                    <div class="flex-1 min-w-0">
                         <span class="font-bold text-neutral-800 block break-words leading-relaxed pb-0.5">${s.titulo}</span>
-                        ${s.isCustom ? `<span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider inline-block">Especial</span>` : `<span class="text-neutral-500 text-xs block break-words leading-snug">${s.ref}</span>`}
+                        ${s.isCustom ? `<span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider inline-block mb-1">Especial</span>` : `<span class="text-neutral-500 text-xs block break-words leading-snug mb-1">${s.ref}</span>`}
+                        <input type="text" placeholder="Añade una nota (ej. Entrada de la novia)" value="${s.note || ''}" onchange="window.updateSongNote(${index}, this.value)" class="w-full mt-1 text-[11px] bg-neutral-50 border border-neutral-200 rounded px-2 py-1.5 text-neutral-700 outline-none focus:border-amber-400 placeholder-neutral-400 transition-colors">
                     </div>
-
-                    ${s.isCustom ? `<button onclick="window.editCustomSong(${index})" class="text-neutral-400 hover:text-amber-500 p-2 transition-colors flex-shrink-0" title="Editar"><i data-lucide="pencil" class="w-4 h-4"></i></button>` : ''}
-                    <button onclick="window.removeSelected(${index})" class="text-neutral-300 hover:text-red-500 p-2 transition-colors flex-shrink-0">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                    </button>
+                    ${s.isCustom ? `<button onclick="window.editCustomSong(${index})" class="text-neutral-400 hover:text-amber-500 p-2 mt-0.5 transition-colors flex-shrink-0" title="Editar"><i data-lucide="pencil" class="w-4 h-4"></i></button>` : ''}
+                    <button onclick="window.removeSelected(${index})" class="text-neutral-300 hover:text-red-500 p-2 mt-0.5 transition-colors flex-shrink-0"><i data-lucide="x" class="w-4 h-4"></i></button>
                 </li>
             `).join('');
-            
             if(window.lucide) window.lucide.createIcons();
         };
 
-        window.handleDragStart = (e, index) => {
-            window.dragStartIndex = index;
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', index);
-            setTimeout(() => e.target.classList.add('dragging'), 0);
-        };
+        window.handleDragStart = (e, index) => { window.dragStartIndex = index; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', index); setTimeout(() => e.target.classList.add('dragging'), 0); };
         window.handleDragOver = (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; const item = e.target.closest('li'); if(item && !item.classList.contains('dragging')) item.classList.add('drag-over'); };
         window.handleDragLeave = (e) => { const item = e.target.closest('li'); if(item) item.classList.remove('drag-over'); };
         window.handleDrop = (e, targetIndex) => {
-            e.stopPropagation();
-            const item = e.target.closest('li');
-            if(item) item.classList.remove('drag-over');
+            e.stopPropagation(); const item = e.target.closest('li'); if(item) item.classList.remove('drag-over');
             if (window.dragStartIndex !== null && window.dragStartIndex !== targetIndex) {
                 const draggedItem = window.orderedSelection[window.dragStartIndex];
                 window.orderedSelection.splice(window.dragStartIndex, 1);
@@ -849,7 +1057,7 @@
         };
         window.handleDragEnd = (e) => { e.target.classList.remove('dragging'); document.querySelectorAll('.drag-item').forEach(item => item.classList.remove('drag-over')); window.dragStartIndex = null; };
 
-        // --- Screenshot Export & DB Save ---
+        // --- Client Screenshot Export & DB Save ---
         window.downloadSelection = async () => {
             const element = document.getElementById('captureArea');
             const btn = document.getElementById('downloadBtn');
@@ -857,15 +1065,9 @@
             const commentsBox = document.getElementById('printCommentsBox');
             
             const cEventType = document.getElementById('clientEventType').value;
-            if (!cEventType) {
-                alert("Por favor, selecciona el 'Tipo de Evento' para poder descargar tu listado.");
-                document.getElementById('clientEventType').focus();
-                return;
-            }
+            if (!cEventType) { alert("Por favor, selecciona el 'Tipo de Evento' para poder descargar tu listado."); document.getElementById('clientEventType').focus(); return; }
 
             const originalText = btn.innerHTML;
-            
-            // Client info
             const cName = document.getElementById('clientName').value.trim();
             const cPhone = document.getElementById('clientPhone').value.trim();
             const cDate = document.getElementById('clientDate').value;
@@ -876,28 +1078,15 @@
                 document.getElementById('printPhone').innerText = cPhone || '-';
                 document.getElementById('printEventType').innerText = cEventType || '-';
                 document.getElementById('printDate').innerText = cDate || '-';
-                
-                if (cComments) {
-                    document.getElementById('printComments').innerText = cComments;
-                    commentsBox.classList.remove('hidden');
-                } else {
-                    commentsBox.classList.add('hidden');
-                }
+                if (cComments) { document.getElementById('printComments').innerText = cComments; commentsBox.classList.remove('hidden'); } else { commentsBox.classList.add('hidden'); }
                 infoBox.classList.remove('hidden');
-            } else {
-                infoBox.classList.add('hidden');
-            }
+            } else { infoBox.classList.add('hidden'); }
 
-            // Save to DB
             if (window.orderedSelection.length > 0) {
                 try {
                     await addDoc(collection(db, "rlm_repertoires"), {
-                        clientName: cName,
-                        clientPhone: cPhone,
-                        eventType: cEventType,
-                        clientDate: cDate,
-                        comments: cComments,
-                        songs: window.orderedSelection.map(s => ({ titulo: s.titulo, ref: s.ref, isCustom: s.isCustom || false })),
+                        clientName: cName, clientPhone: cPhone, eventType: cEventType, clientDate: cDate, comments: cComments,
+                        songs: window.orderedSelection.map(s => ({ titulo: s.titulo, ref: s.ref, isCustom: s.isCustom || false, note: s.note || "" })),
                         timestamp: new Date().toISOString()
                     });
                 } catch (e) { console.error("Error guardar rep:", e); }
@@ -908,11 +1097,27 @@
             
             const noCaptureElements = element.querySelectorAll('.cursor-grab, button');
             noCaptureElements.forEach(el => el.style.opacity = '0');
+            
+            // Format notes for print
+            const inputNotes = element.querySelectorAll('input[type="text"]');
+            const replacedNotes = [];
+            inputNotes.forEach(inp => {
+                if(inp.value.trim() !== "") {
+                    const div = document.createElement('div');
+                    div.className = "text-[11px] text-amber-700 italic mt-1 font-semibold";
+                    div.innerText = "Nota: " + inp.value;
+                    inp.parentNode.insertBefore(div, inp);
+                    replacedNotes.push({ input: inp, div: div });
+                }
+                inp.style.display = 'none';
+            });
 
             document.fonts.ready.then(() => {
                 setTimeout(() => {
                     html2canvas(element, { scale: 2, backgroundColor: "#ffffff", useCORS: true, logging: false }).then(canvas => {
                         noCaptureElements.forEach(el => el.style.opacity = '1');
+                        replacedNotes.forEach(rn => { rn.input.style.display = ''; rn.div.remove(); });
+                        inputNotes.forEach(inp => inp.style.display = '');
                         infoBox.classList.add('hidden'); 
                         
                         const link = document.createElement('a');
@@ -948,6 +1153,7 @@
         window.closeAdmin = () => { 
             document.getElementById('adminModal').classList.remove('active'); 
             window.cancelEditSong(); 
+            window.closeAdminRepEditor();
         };
 
         window.checkAdminPass = () => {
@@ -973,9 +1179,7 @@
                 b.classList.remove('active', 'text-amber-500', 'border-amber-500');
                 b.classList.add('text-neutral-400', 'border-transparent');
             });
-            
             document.getElementById(tabId).classList.add('active');
-            
             btnElement.classList.add('active', 'text-amber-500', 'border-amber-500');
             btnElement.classList.remove('text-neutral-400', 'border-transparent');
 
@@ -984,25 +1188,50 @@
 
         // --- Tab 1: Config & Géneros ---
         window.loadAdminSettings = () => {
+            document.getElementById('setMainTitle').value = window.siteSettings.mainTitle || "";
+            document.getElementById('setSubTitle').value = window.siteSettings.subTitle || "";
             document.getElementById('setLogoImg').value = window.siteSettings.logoImage || "";
             document.getElementById('setHeroBgImg').value = window.siteSettings.heroBgImage || "";
             document.getElementById('setWa').value = window.siteSettings.wa || "";
             document.getElementById('setIg').value = window.siteSettings.ig || "";
             document.getElementById('setFb').value = window.siteSettings.fb || "";
             document.getElementById('setTk').value = window.siteSettings.tk || "";
+            
+            // Colors
+            document.getElementById('setColorPrimary').value = window.siteSettings.colorPrimary || "#d4af37";
+            document.getElementById('hexPrimary').innerText = window.siteSettings.colorPrimary || "#d4af37";
+            document.getElementById('setColorBg').value = window.siteSettings.colorBg || "#09090b";
+            document.getElementById('hexBg').innerText = window.siteSettings.colorBg || "#09090b";
+            document.getElementById('setColorCard').value = window.siteSettings.colorCard || "#18181b";
+            document.getElementById('hexCard').innerText = window.siteSettings.colorCard || "#18181b";
+            document.getElementById('setColorText').value = window.siteSettings.colorText || "#e5e5e5";
+            document.getElementById('hexText').innerText = window.siteSettings.colorText || "#e5e5e5";
         };
+
+        // Live hex update
+        ['Primary','Bg','Card','Text'].forEach(type => {
+            document.getElementById(`setColor${type}`).addEventListener('input', (e) => {
+                document.getElementById(`hex${type}`).innerText = e.target.value;
+            });
+        });
 
         window.saveAdminSettings = async (event) => {
             const btn = event.target;
             const originalText = btn.innerText;
             btn.innerText = "Guardando...";
             const newSettings = {
+                mainTitle: document.getElementById('setMainTitle').value.trim(),
+                subTitle: document.getElementById('setSubTitle').value.trim(),
                 logoImage: document.getElementById('setLogoImg').value.trim(),
                 heroBgImage: document.getElementById('setHeroBgImg').value.trim(),
                 wa: document.getElementById('setWa').value.trim(),
                 ig: document.getElementById('setIg').value.trim(),
                 fb: document.getElementById('setFb').value.trim(),
-                tk: document.getElementById('setTk').value.trim()
+                tk: document.getElementById('setTk').value.trim(),
+                colorPrimary: document.getElementById('setColorPrimary').value,
+                colorBg: document.getElementById('setColorBg').value,
+                colorCard: document.getElementById('setColorCard').value,
+                colorText: document.getElementById('setColorText').value
             };
             await setDoc(doc(db, "rlm_settings", "general"), newSettings);
             btn.innerText = "¡Guardado!";
@@ -1051,7 +1280,6 @@
         window.renderAdminList = () => {
             const list = document.getElementById('adminList');
             const search = document.getElementById('adminSearch').value.toLowerCase();
-            
             const filtered = window.songs.filter(s => s.titulo.toLowerCase().includes(search) || s.ref.toLowerCase().includes(search));
 
             list.innerHTML = filtered.map(s => {
@@ -1085,7 +1313,6 @@
             const title = document.getElementById('newTitle').value.trim();
             const ref = document.getElementById('newRef').value.trim();
             const link = document.getElementById('newLink').value.trim();
-            
             const checkboxes = document.querySelectorAll('.song-genre-cb:checked');
             const selectedMoments = Array.from(checkboxes).map(cb => cb.value);
 
@@ -1095,7 +1322,6 @@
             const btn = event.target;
             const originalText = btn.innerText;
             btn.innerText = "Guardando...";
-
             const songData = { titulo: title, ref: ref || "S/R", genero: selectedMoments, link: link };
 
             if (window.editingSongId) {
@@ -1104,7 +1330,6 @@
                 songData.clicks = 0;
                 await addDoc(collection(db, "rlm_songs"), songData);
             }
-            
             window.cancelEditSong();
             btn.innerText = "¡Listo!";
             setTimeout(() => { btn.innerText = "Añadir Pieza"; }, 1500);
@@ -1118,7 +1343,6 @@
             document.getElementById('newTitle').value = song.titulo;
             document.getElementById('newRef').value = song.ref;
             document.getElementById('newLink').value = song.link || '';
-            
             const genresArr = getGenresArray(song.genero);
             document.querySelectorAll('.song-genre-cb').forEach(cb => { cb.checked = genresArr.includes(cb.value); });
             document.getElementById('saveSongBtn').innerText = "Guardar Cambios";
@@ -1138,12 +1362,10 @@
         };
 
         window.deleteSong = async (id) => {
-            if(confirm("¿Eliminar pieza permanentemente?")) {
-                await deleteDoc(doc(db, "rlm_songs", id));
-            }
+            if(confirm("¿Eliminar pieza permanentemente?")) await deleteDoc(doc(db, "rlm_songs", id));
         };
 
-        // --- Tab 3: Repertorios CRUD ---
+        // --- Tab 3: Admin Repertorios Editor CRUD ---
         window.renderRepertoiresAdmin = () => {
             const list = document.getElementById('repertoiresAdminList');
             list.innerHTML = window.repertoires.map(r => {
@@ -1165,7 +1387,7 @@
                         <p class="text-[8px] text-neutral-500 mt-0.5">${formattedDate}</p>
                     </div>
                     <div class="col-span-3 flex justify-end gap-1">
-                        <button onclick="window.viewRepertoire('${r.id}')" class="text-blue-400 hover:bg-blue-400/20 p-1.5 rounded transition-colors" title="Ver lista"><i data-lucide="eye" class="w-3.5 h-3.5"></i></button>
+                        <button onclick="window.editAdminRepertoire('${r.id}')" class="text-blue-400 hover:bg-blue-400/20 p-1.5 rounded transition-colors" title="Editar y Generar Imagen"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
                         <button onclick="window.deleteRepertoire('${r.id}')" class="text-red-400 hover:bg-red-400/20 p-1.5 rounded transition-colors" title="Eliminar"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                     </div>
                 </div>
@@ -1173,21 +1395,172 @@
             if(window.lucide) window.lucide.createIcons();
         };
 
-        window.viewRepertoire = (id) => {
-            const rep = window.repertoires.find(r => r.id === id);
-            if(!rep) return;
-            const songList = rep.songs.map((s, i) => `${i+1}. ${s.titulo} ${s.isCustom ? '(Especial)' : ''}`).join('\n');
-            alert(`--- ${rep.eventType} de ${rep.clientName || 'Sin Nombre'} ---\nTel: ${rep.clientPhone || 'N/A'}\nFecha: ${rep.clientDate || 'N/A'}\nComentarios: ${rep.comments || 'N/A'}\n\nPiezas elegidas:\n${songList}`);
-        };
-
         window.deleteRepertoire = async (id) => {
             if(confirm("¿Seguro que deseas eliminar este repertorio?")) await deleteDoc(doc(db, "rlm_repertoires", id));
         };
 
+        window.editAdminRepertoire = (id) => {
+            const rep = window.repertoires.find(r => r.id === id);
+            if(!rep) return;
+            
+            window.editingRepertoireId = id;
+            window.editingRepertoireSongs = JSON.parse(JSON.stringify(rep.songs || []));
+
+            document.getElementById('adminRepName').value = rep.clientName || '';
+            document.getElementById('adminRepPhone').value = rep.clientPhone || '';
+            document.getElementById('adminRepEventType').value = rep.eventType || '';
+            document.getElementById('adminRepDate').value = rep.clientDate || '';
+            document.getElementById('adminRepComments').value = rep.comments || '';
+
+            document.getElementById('repertoiresListSection').classList.add('hidden');
+            document.getElementById('repertoireEditorSection').classList.remove('hidden');
+
+            window.updateAdminRepPreview();
+        };
+
+        window.closeAdminRepEditor = () => {
+            window.editingRepertoireId = null;
+            window.editingRepertoireSongs = [];
+            document.getElementById('repertoireEditorSection').classList.add('hidden');
+            document.getElementById('repertoiresListSection').classList.remove('hidden');
+        };
+
+        // Admin internal reorder logic
+        window.updateAdminRepPreview = () => {
+            const list = document.getElementById('adminRepSongsList');
+            const visualList = document.getElementById('adminSelectedSongsList');
+            
+            // 1. Render Editor List
+            list.innerHTML = window.editingRepertoireSongs.map((s, index) => `
+                <li draggable="true" 
+                    ondragstart="window.adminDragStart(event, ${index})" ondragover="window.adminDragOver(event)" ondragleave="window.adminDragLeave(event)" ondrop="window.adminDrop(event, ${index})" ondragend="window.adminDragEnd(event)"
+                    class="drag-item flex items-start gap-2 border-b border-white/10 pb-3 mb-2 bg-zinc-800/50 p-2 rounded">
+                    
+                    <div class="cursor-grab text-neutral-500 hover:text-amber-500 mt-1 flex-shrink-0"><i data-lucide="grip-vertical" class="w-4 h-4"></i></div>
+                    <div class="text-[10px] text-neutral-500 font-mono w-4 mt-1 flex-shrink-0">${index + 1}.</div>
+                    
+                    <div class="flex-1 min-w-0">
+                        <span class="font-bold text-neutral-200 block text-xs truncate">${s.titulo}</span>
+                        ${s.isCustom ? `<span class="text-[9px] bg-amber-900/30 text-amber-500 px-1.5 py-0.5 rounded uppercase inline-block mb-1">Especial</span>` : `<span class="text-neutral-500 text-[10px] block truncate mb-1">${s.ref}</span>`}
+                        
+                        <input type="text" placeholder="Nota..." value="${s.note || ''}" onchange="window.updateAdminSongNote(${index}, this.value)" class="w-full mt-1 text-[10px] bg-zinc-900 border border-white/10 rounded px-2 py-1 text-neutral-300 outline-none focus:border-amber-500">
+                    </div>
+                    <button onclick="window.removeAdminRepSong(${index})" class="text-neutral-500 hover:text-red-400 p-1 mt-0.5 transition-colors flex-shrink-0"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                </li>
+            `).join('');
+
+            // 2. Render Visual Preview inside admin Capture Area
+            const cName = document.getElementById('adminRepName').value.trim();
+            const cPhone = document.getElementById('adminRepPhone').value.trim();
+            const cEventType = document.getElementById('adminRepEventType').value;
+            const cDate = document.getElementById('adminRepDate').value;
+            const cComments = document.getElementById('adminRepComments').value.trim();
+            const infoBox = document.getElementById('adminCaptureClientInfo');
+            const commentsBox = document.getElementById('adminPrintCommentsBox');
+
+            if(cName || cPhone || cEventType || cDate || cComments) {
+                document.getElementById('adminPrintName').innerText = cName || '-';
+                document.getElementById('adminPrintPhone').innerText = cPhone || '-';
+                document.getElementById('adminPrintEventType').innerText = cEventType || '-';
+                document.getElementById('adminPrintDate').innerText = cDate || '-';
+                if (cComments) { document.getElementById('adminPrintComments').innerText = cComments; commentsBox.classList.remove('hidden'); } 
+                else { commentsBox.classList.add('hidden'); }
+                infoBox.classList.remove('hidden');
+            } else { infoBox.classList.add('hidden'); }
+
+            const totalMins = Math.round(window.editingRepertoireSongs.length * 3.5);
+            document.getElementById('adminRepCount').innerText = `${window.editingRepertoireSongs.length} pz.`;
+            document.getElementById('adminCaptureSongsCount').innerText = `${window.editingRepertoireSongs.length} Piezas`;
+            document.getElementById('adminCaptureTime').innerText = `Aprox. ${totalMins} Minutos`;
+
+            // Render songs for screenshot
+            visualList.innerHTML = window.editingRepertoireSongs.map((s, index) => `
+                <li class="flex items-start gap-3 border-b border-neutral-100 py-2">
+                    <div class="text-xs text-neutral-400 font-mono w-4 mt-1 flex-shrink-0">${index + 1}.</div>
+                    <div class="flex-1 min-w-0 py-1">
+                        <span class="font-bold text-neutral-800 block break-words leading-relaxed pb-0.5">${s.titulo}</span>
+                        ${s.isCustom ? `<span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider inline-block mb-1">Especial</span>` : `<span class="text-neutral-500 text-xs block break-words leading-snug mb-1">${s.ref}</span>`}
+                        ${s.note ? `<div class="text-[11px] text-amber-700 italic mt-1 font-semibold">Nota: ${s.note}</div>` : ''}
+                    </div>
+                </li>
+            `).join('');
+
+            if(window.lucide) window.lucide.createIcons();
+        };
+
+        window.updateAdminSongNote = (i, val) => { window.editingRepertoireSongs[i].note = val; window.updateAdminRepPreview(); };
+        window.removeAdminRepSong = (i) => { window.editingRepertoireSongs.splice(i, 1); window.updateAdminRepPreview(); };
+        window.addAdminRepSong = () => {
+            const input = document.getElementById('adminRepCustomSong');
+            if(!input.value.trim()) return;
+            window.editingRepertoireSongs.push({ id: 'c_'+Date.now(), titulo: input.value.trim(), ref: 'Petición Especial', isCustom: true, note: "" });
+            input.value = '';
+            window.updateAdminRepPreview();
+        };
+
+        window.adminDragStart = (e, i) => { window.adminDragStartIndex = i; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', i); setTimeout(() => e.target.classList.add('dragging'), 0); };
+        window.adminDragOver = (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; const item = e.target.closest('li'); if(item && !item.classList.contains('dragging')) item.classList.add('drag-over'); };
+        window.adminDragLeave = (e) => { const item = e.target.closest('li'); if(item) item.classList.remove('drag-over'); };
+        window.adminDrop = (e, targetI) => {
+            e.stopPropagation(); const item = e.target.closest('li'); if(item) item.classList.remove('drag-over');
+            if (window.adminDragStartIndex !== null && window.adminDragStartIndex !== targetI) {
+                const draggedItem = window.editingRepertoireSongs[window.adminDragStartIndex];
+                window.editingRepertoireSongs.splice(window.adminDragStartIndex, 1);
+                window.editingRepertoireSongs.splice(targetI, 0, draggedItem);
+                window.updateAdminRepPreview();
+            }
+            return false;
+        };
+        window.adminDragEnd = (e) => { e.target.classList.remove('dragging'); document.querySelectorAll('.drag-item').forEach(item => item.classList.remove('drag-over')); window.adminDragStartIndex = null; };
+
+        // Save from Admin
+        window.saveAdminRepertoire = async () => {
+            if(!window.editingRepertoireId) return;
+            const btn = document.getElementById('adminRepSaveBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> ...`;
+            
+            await updateDoc(doc(db, "rlm_repertoires", window.editingRepertoireId), {
+                clientName: document.getElementById('adminRepName').value.trim(),
+                clientPhone: document.getElementById('adminRepPhone').value.trim(),
+                eventType: document.getElementById('adminRepEventType').value || "No especificado",
+                clientDate: document.getElementById('adminRepDate').value,
+                comments: document.getElementById('adminRepComments').value.trim(),
+                songs: window.editingRepertoireSongs
+            });
+            
+            btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> Guardado`;
+            btn.classList.add('bg-green-600', 'border-green-500');
+            setTimeout(() => { btn.innerHTML = originalText; btn.classList.remove('bg-green-600', 'border-green-500'); if(window.lucide) window.lucide.createIcons(); }, 2000);
+        };
+
+        // Download from Admin
+        window.downloadAdminRepertoireImage = () => {
+            const element = document.getElementById('adminCaptureArea');
+            const btn = document.getElementById('adminRepDownloadBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> ...`;
+            
+            document.fonts.ready.then(() => {
+                html2canvas(element, { scale: 2, backgroundColor: "#ffffff", useCORS: true, logging: false }).then(canvas => {
+                    const cDate = document.getElementById('adminRepDate').value || 'Evento';
+                    const link = document.createElement('a');
+                    link.download = `Repertorio_Rolando_${cDate}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> Descargado`;
+                    btn.classList.add('bg-green-600');
+                    setTimeout(() => { btn.innerHTML = originalText; btn.classList.remove('bg-green-600'); if(window.lucide) window.lucide.createIcons(); }, 2000);
+                });
+            });
+        };
+
+        // Export Repertoires CSV
         window.exportRepertoiresCSV = () => {
-            let csvContent = "Cliente,Telefono,Tipo de Evento,Fecha Evento,Comentarios,Fecha Registro,Canciones\n";
+            let csvContent = "Cliente,Telefono,Tipo de Evento,Fecha Evento,Comentarios,Fecha Registro,Canciones (con notas)\n";
             window.repertoires.forEach(r => {
-                const songsList = (r.songs || []).map(s => s.titulo).join(" | ");
+                const songsList = (r.songs || []).map(s => `${s.titulo}${s.note ? ` [${s.note}]` : ''}`).join(" | ");
                 csvContent += `${escapeCSV(r.clientName)},${escapeCSV(r.clientPhone)},${escapeCSV(r.eventType)},${escapeCSV(r.clientDate)},${escapeCSV(r.comments)},${escapeCSV(r.timestamp)},${escapeCSV(songsList)}\n`;
             });
             const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -1201,52 +1574,38 @@
         };
 
         // --- Tab 4: Estadísticas (Chart.js) con Filtros y Descarga ---
-        
         const customCanvasBackgroundColor = {
             id: 'customCanvasBackgroundColor',
             beforeDraw: (chart, args, options) => {
                 const {ctx} = chart;
                 ctx.save();
                 ctx.globalCompositeOperation = 'destination-over';
-                ctx.fillStyle = options.color || '#09090b';
+                ctx.fillStyle = options.color || getComputedStyle(document.documentElement).getPropertyValue('--c-bg').trim() || '#09090b';
                 ctx.fillRect(0, 0, chart.width, chart.height);
                 ctx.restore();
             }
         };
 
-        window.filterTopClicks = (limit) => {
-            window.activeTopFilter = limit;
-            window.renderCharts();
-        };
-
-        window.filterRepertoiresDays = (days) => {
-            window.activeDaysFilter = days;
-            window.renderCharts();
-        };
-
+        window.filterTopClicks = (limit) => { window.activeTopFilter = limit; window.renderCharts(); };
+        window.filterRepertoiresDays = (days) => { window.activeDaysFilter = days; window.renderCharts(); };
         window.downloadChartImage = (canvasId, filename) => {
             const canvas = document.getElementById(canvasId);
-            const link = document.createElement('a');
-            link.download = filename + '.png';
-            link.href = canvas.toDataURL('image/png', 1.0);
-            link.click();
+            const link = document.createElement('a'); link.download = filename + '.png'; link.href = canvas.toDataURL('image/png', 1.0); link.click();
         };
 
         window.renderCharts = () => {
-            // 1. Chart: Canciones por Género Musical (Doughnut)
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--c-primary').trim() || '#d4af37';
+            const primaryLight = getComputedStyle(document.documentElement).getPropertyValue('--c-primary-light').trim() || '#fbe599';
+            
+            // 1. Chart: Canciones por Género
             const genreCounts = {};
             window.activeGenres.forEach(m => genreCounts[m] = 0);
             genreCounts["General / Otros"] = 0;
-
             window.songs.forEach(s => {
                 const genresArr = getGenresArray(s.genero);
                 if (genresArr.length === 0) genreCounts["General / Otros"]++;
-                genresArr.forEach(g => {
-                    if (genreCounts[g] !== undefined) genreCounts[g]++;
-                    else genreCounts["General / Otros"]++;
-                });
+                genresArr.forEach(g => { if (genreCounts[g] !== undefined) genreCounts[g]++; else genreCounts["General / Otros"]++; });
             });
-
             if(chartInstanceGenres) chartInstanceGenres.destroy();
             const ctxGenres = document.getElementById('chartGenres').getContext('2d');
             chartInstanceGenres = new Chart(ctxGenres, {
@@ -1255,39 +1614,32 @@
                     labels: Object.keys(genreCounts).filter(k => genreCounts[k] > 0),
                     datasets: [{
                         data: Object.values(genreCounts).filter(v => v > 0),
-                        backgroundColor: ['#d4af37', '#fbe599', '#9ca3af', '#52525b', '#27272a', '#18181b', '#ffffff'],
-                        borderWidth: 1, borderColor: '#09090b'
+                        backgroundColor: [primaryColor, primaryLight, '#9ca3af', '#52525b', '#27272a', '#18181b', '#ffffff'],
+                        borderWidth: 1, borderColor: 'var(--c-bg)'
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#e5e5e5', font: {size: 10} } }, customCanvasBackgroundColor: { color: '#09090b' } } },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: 'var(--c-text)', font: {size: 10} } }, customCanvasBackgroundColor: { color: 'var(--c-bg)' } } },
                 plugins: [customCanvasBackgroundColor]
             });
 
-            // 2. Chart: Top N Canciones (Bar)
+            // 2. Chart: Top Clics
             const topSongs = [...window.songs].sort((a, b) => (b.clicks || 0) - (a.clicks || 0)).slice(0, window.activeTopFilter);
-            
             if(chartInstanceClicks) chartInstanceClicks.destroy();
             const ctxClicks = document.getElementById('chartClicks').getContext('2d');
             chartInstanceClicks = new Chart(ctxClicks, {
                 type: 'bar',
                 data: {
                     labels: topSongs.map(s => s.titulo.length > 15 ? s.titulo.substring(0,15)+'...' : s.titulo),
-                    datasets: [{
-                        label: 'Veces Solicitada',
-                        data: topSongs.map(s => s.clicks || 0),
-                        backgroundColor: '#d4af37',
-                        borderRadius: 4
-                    }]
+                    datasets: [{ label: 'Veces Solicitada', data: topSongs.map(s => s.clicks || 0), backgroundColor: primaryColor, borderRadius: 4 }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: '#9ca3af' } }, x: { ticks: { color: '#9ca3af', maxRotation: 45, minRotation: 45 } } }, plugins: { legend: { display: false }, customCanvasBackgroundColor: { color: '#09090b' } } },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: 'var(--c-text-muted)' } }, x: { ticks: { color: 'var(--c-text-muted)', maxRotation: 45, minRotation: 45 } } }, plugins: { legend: { display: false }, customCanvasBackgroundColor: { color: 'var(--c-bg)' } } },
                 plugins: [customCanvasBackgroundColor]
             });
 
-            // 3. Chart: Repertorios por Fecha (Line)
+            // 3. Chart: Repertorios
             const dateCounts = {};
             const now = new Date();
             const filterTime = window.activeDaysFilter > 0 ? new Date(now.setDate(now.getDate() - window.activeDaysFilter)) : new Date(0);
-
             window.repertoires.forEach(r => {
                 if(!r.timestamp) return;
                 const rDate = new Date(r.timestamp);
@@ -1297,21 +1649,15 @@
                 }
             });
             const sortedDates = Object.keys(dateCounts).sort((a,b) => new Date(a) - new Date(b));
-
             if(chartInstanceRepertoires) chartInstanceRepertoires.destroy();
             const ctxReps = document.getElementById('chartRepertoires').getContext('2d');
             chartInstanceRepertoires = new Chart(ctxReps, {
                 type: 'line',
                 data: {
                     labels: sortedDates,
-                    datasets: [{
-                        label: 'Repertorios Generados',
-                        data: sortedDates.map(d => dateCounts[d]),
-                        borderColor: '#d4af37', backgroundColor: 'rgba(212, 175, 55, 0.1)',
-                        fill: true, tension: 0.3, pointBackgroundColor: '#ffffff'
-                    }]
+                    datasets: [{ label: 'Repertorios Generados', data: sortedDates.map(d => dateCounts[d]), borderColor: primaryColor, backgroundColor: primaryColor+'33', fill: true, tension: 0.3, pointBackgroundColor: '#ffffff' }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: '#9ca3af', stepSize: 1 } }, x: { ticks: { color: '#9ca3af' } } }, plugins: { legend: { display: false }, customCanvasBackgroundColor: { color: '#09090b' } } },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: 'var(--c-text-muted)', stepSize: 1 } }, x: { ticks: { color: 'var(--c-text-muted)' } } }, plugins: { legend: { display: false }, customCanvasBackgroundColor: { color: 'var(--c-bg)' } } },
                 plugins: [customCanvasBackgroundColor]
             });
         };
