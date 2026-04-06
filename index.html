@@ -320,9 +320,12 @@
                     <div class="inline-block p-4 rounded-full bg-amber-500/10 mb-2">
                         <i data-lucide="key-round" class="w-8 h-8 text-amber-500"></i>
                     </div>
-                    <p class="text-neutral-400">Introduce tu clave de acceso</p>
-                    <input type="password" id="adminPass" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 w-48 text-center text-amber-500 font-mono text-xl focus:border-amber-500 outline-none transition-colors mx-auto block">
-                    <div id="loginError" class="text-red-400 text-sm hidden">Clave incorrecta. Intenta de nuevo.</div>
+                    <p class="text-neutral-400 mb-4">Introduce tus credenciales</p>
+                    <div class="space-y-3 max-w-xs mx-auto">
+                        <input type="email" id="adminEmail" placeholder="Correo electrónico" value="Correo" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 w-full text-center text-amber-500 text-sm focus:border-amber-500 outline-none transition-colors block">
+                        <input type="password" id="adminPass" placeholder="Contraseña" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 w-full text-center text-amber-500 font-mono text-xl focus:border-amber-500 outline-none transition-colors block">
+                    </div>
+                    <div id="loginError" class="text-red-400 text-sm hidden">Credenciales incorrectas. Intenta de nuevo.</div>
                     <button onclick="window.checkAdminPass()" class="bg-amber-600 hover:bg-amber-500 text-white px-10 py-3 rounded-xl transition-colors font-medium mt-4">Acceder</button>
                 </div>
 
@@ -806,18 +809,26 @@
                     if (docSnap.exists() && docSnap.data().list) { window.activeGenres = docSnap.data().list; } 
                     else { setDoc(doc(db, "rlm_settings", "genres"), { list: defaultGenres }).catch(e => console.warn(e)); }
                     window.renderFilters();
-                    window.renderGenresAdmin();
-                    window.renderGenreCheckboxes();
+                    
+                    // Seguridad: Solo dibujar si el panel admin está abierto y la función ya cargó
+                    if(!document.getElementById('adminManager').classList.contains('hidden')) {
+                        if(typeof window.renderGenresAdmin === 'function') window.renderGenresAdmin();
+                        if(typeof window.renderGenreCheckboxes === 'function') window.renderGenreCheckboxes();
+                    }
                 }, (error) => console.warn("Error cargando géneros:", error));
 
                 // Listen Instruments (Public)
                 onSnapshot(doc(db, "rlm_settings", "instruments"), (docSnap) => {
                     if (docSnap.exists() && docSnap.data().list) { window.activeInstruments = docSnap.data().list; } 
                     else { setDoc(doc(db, "rlm_settings", "instruments"), { list: defaultInstruments }).catch(e => console.warn(e)); }
-                    window.renderInstrumentsAdmin();
+                    
+                    if(!document.getElementById('adminManager').classList.contains('hidden')) {
+                        if(typeof window.renderInstrumentsAdmin === 'function') window.renderInstrumentsAdmin();
+                    }
+                    
                     // Refrescar vistas en caso de que estén abiertas
-                    window.updateSelectionView();
-                    if(window.editingRepertoireId) window.updateAdminRepPreview();
+                    if(typeof window.updateSelectionView === 'function') window.updateSelectionView();
+                    if(window.editingRepertoireId && typeof window.updateAdminRepPreview === 'function') window.updateAdminRepPreview();
                 }, (error) => console.warn("Error cargando instrumentos:", error));
             }
         });
@@ -1203,13 +1214,13 @@
 
         window.closeAdmin = () => { 
             document.getElementById('adminModal').classList.remove('active'); 
-            window.cancelEditSong(); 
-            window.closeAdminRepEditor();
+            if(typeof window.cancelEditSong === 'function') window.cancelEditSong(); 
+            if(typeof window.closeAdminRepEditor === 'function') window.closeAdminRepEditor();
         };
 
         window.checkAdminPass = () => {
+            const email = document.getElementById('adminEmail').value.trim();
             const pass = document.getElementById('adminPass').value;
-            const email = 'rch338899@gmail.com'; // Tu correo de administrador
             
             // Autenticación segura con Firebase
             signInWithEmailAndPassword(auth, email, pass)
@@ -1842,7 +1853,11 @@
         // --- Listeners ---
         document.getElementById('searchInput').addEventListener('input', window.renderGrid);
         document.getElementById('genreFilter').addEventListener('change', window.renderGrid);
+        
+        // Habilitar Enter para el login
         document.getElementById('adminPass').addEventListener('keypress', function (e) { if (e.key === 'Enter') window.checkAdminPass(); });
+        document.getElementById('adminEmail').addEventListener('keypress', function (e) { if (e.key === 'Enter') window.checkAdminPass(); });
+        
         document.getElementById('customSongInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') window.addCustomSong(); });
     </script>
 </body>
