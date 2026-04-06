@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Librería para gráficas -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
         
@@ -27,6 +28,7 @@
 
         /* Elegance & Parallax */
         .parallax-hero {
+            background-color: var(--dark-bg);
             background-image: linear-gradient(to bottom, rgba(9, 9, 11, 0.3), rgba(9, 9, 11, 1)), url('https://images.unsplash.com/photo-1520114002624-912b6f4cce28?q=80&w=2000&auto=format&fit=crop');
             background-attachment: fixed;
             background-position: center;
@@ -71,6 +73,11 @@
             backdrop-filter: blur(12px);
         }
         .admin-modal.active { display: flex; }
+
+        /* Admin Tabs */
+        .admin-tab { display: none; }
+        .admin-tab.active { display: block; animation: fadeInUp 0.3s forwards; }
+        .tab-btn.active { border-bottom-color: var(--gold); color: var(--gold); }
     </style>
 </head>
 <body class="overflow-x-hidden relative">
@@ -81,13 +88,14 @@
     </a>
 
     <!-- Hero Section (Parallax) -->
-    <header class="parallax-hero pt-20 pb-16 px-6 text-center border-b border-white/5 relative z-10">
+    <header class="parallax-hero pt-20 pb-16 px-6 text-center border-b border-white/5 relative z-10" id="heroSection">
         <div class="max-w-5xl mx-auto animate-fade-in">
             <div class="flex justify-center mb-8">
                 <div class="relative group">
                     <div class="absolute inset-0 rounded-full bg-amber-500/20 blur-xl group-hover:bg-amber-500/30 transition-all duration-700"></div>
                     <img src="https://i.ibb.co/gM83nXf3/Gemini-Generated-Image-c8zfwsc8zfwsc8zf.png" 
                          alt="Rolando Live Music" 
+                         id="heroImageEl"
                          class="w-40 h-40 rounded-full object-cover border-[3px] border-amber-500 shadow-2xl relative z-10 transition-transform duration-700 hover:scale-105"
                          crossorigin="anonymous">
                 </div>
@@ -101,10 +109,7 @@
                 <span>Aniversarios</span>
             </div>
             
-            <!-- Dynamic Social Links Header -->
-            <div id="headerSocials" class="flex justify-center gap-5 mt-6">
-                <!-- Injected via JS -->
-            </div>
+            <div id="headerSocials" class="flex justify-center gap-5 mt-6"></div>
         </div>
     </header>
 
@@ -126,8 +131,101 @@
             </div>
         </div>
 
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-20 animate-fade-in delay-200">
+            <i data-lucide="loader-2" class="w-10 h-10 text-amber-500 animate-spin mx-auto mb-4"></i>
+            <p class="text-neutral-400" id="loadingText">Cargando repertorio...</p>
+        </div>
+
+        <!-- Song Grid -->
+        <div id="songGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-16 animate-fade-in delay-200 hidden">
+            <!-- Dynamically populated -->
+        </div>
+
+        <!-- SELECTION SECTION (For Screenshot & DragDrop) -->
+        <section id="selectionSection" class="hidden mt-12 mb-16 animate-fade-in">
+            <!-- Detalles del Evento -->
+            <div class="mb-8 border-b border-white/10 pb-8 bg-zinc-900/20 p-6 rounded-2xl">
+                <h2 class="text-2xl font-serif text-amber-500 mb-4 flex items-center gap-2"><i data-lucide="calendar-heart" class="w-5 h-5"></i> Detalles del Evento</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                    <input type="text" id="clientName" placeholder="Nombre completo" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none transition-colors">
+                    <input type="tel" id="clientPhone" placeholder="Teléfono" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none transition-colors">
+                    
+                    <select id="clientEventType" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none transition-colors text-neutral-400">
+                        <option value="" disabled selected>Tipo de Evento</option>
+                        <option value="Boda">Boda</option>
+                        <option value="XV Años">XV Años</option>
+                        <option value="Propuesta de Matrimonio">Propuesta de Matrimonio</option>
+                        <option value="Propuesta de Noviazgo">Propuesta de Noviazgo</option>
+                        <option value="Despedida de Soltera">Despedida de Soltera</option>
+                        <option value="Cena Romántica">Cena Romántica</option>
+                        <option value="Aniversario">Aniversario</option>
+                        <option value="Evento Corporativo">Evento Corporativo</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+
+                    <input type="date" id="clientDate" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none text-neutral-400 transition-colors">
+                </div>
+                <textarea id="clientComments" rows="2" placeholder="Comentarios o indicaciones especiales para Rolando..." class="w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-amber-500/50 outline-none resize-none transition-colors"></textarea>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 gap-4">
+                <div>
+                    <h2 class="text-3xl font-serif text-amber-500 mb-1">Tu Repertorio</h2>
+                    <p class="text-neutral-400 text-sm mb-2">Arrastra las canciones para cambiar el orden exacto.</p>
+                    <div class="inline-flex items-center gap-2 bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3 py-1.5 rounded-lg text-sm font-medium">
+                        <i data-lucide="timer" class="w-4 h-4"></i>
+                        <span id="timeEstimator">0 min aprox de música</span>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="window.downloadSelection()" id="downloadBtn" class="text-xs bg-amber-600 hover:bg-amber-500 text-white transition-colors px-4 py-2 rounded-lg font-bold flex items-center gap-2 shadow-lg shadow-amber-900/20">
+                        <i data-lucide="download" class="w-4 h-4"></i> Descargar Mi listado
+                    </button>
+                    <button onclick="window.clearSelection()" class="text-xs text-red-400/80 hover:text-red-400 transition-colors bg-red-400/10 px-4 py-2 rounded-lg">Vaciar lista</button>
+                </div>
+            </div>
+            
+            <div id="captureArea" class="p-8 rounded-3xl screenshot-area shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-neutral-200 relative bg-white">
+                <div class="flex items-center justify-between border-b border-neutral-200 pb-6 mb-6">
+                    <div class="flex items-center gap-4">
+                        <img src="" id="captureLogo" class="w-14 h-14 rounded-full border-2 border-amber-600 shadow-md object-cover" crossorigin="anonymous">
+                        <div>
+                            <p class="font-serif font-bold text-2xl leading-none text-neutral-900">Rolando Live Music</p>
+                            <p class="text-xs text-amber-600 uppercase tracking-widest font-semibold mt-1">Selección del Evento</p>
+                        </div>
+                    </div>
+                    <div class="text-right hidden sm:block">
+                        <p id="captureTime" class="text-xs font-bold text-neutral-400 uppercase tracking-wider"></p>
+                        <p id="captureSongsCount" class="text-neutral-900 font-serif font-bold text-xl"></p>
+                    </div>
+                </div>
+                
+                <!-- Client Info Print Area -->
+                <div id="captureClientInfo" class="hidden mb-6 bg-neutral-50 border border-neutral-200 p-4 rounded-xl flex flex-col gap-2 text-sm text-neutral-700">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full border-b border-neutral-200 pb-2 mb-1">
+                        <div><span class="font-bold text-neutral-900 block text-xs uppercase tracking-wider text-neutral-400">Cliente</span> <span id="printName" class="font-medium"></span></div>
+                        <div><span class="font-bold text-neutral-900 block text-xs uppercase tracking-wider text-neutral-400">Teléfono</span> <span id="printPhone" class="font-medium"></span></div>
+                        <div><span class="font-bold text-neutral-900 block text-xs uppercase tracking-wider text-neutral-400">Evento</span> <span id="printEventType" class="font-medium text-amber-600"></span></div>
+                        <div><span class="font-bold text-neutral-900 block text-xs uppercase tracking-wider text-neutral-400">Fecha</span> <span id="printDate" class="font-medium"></span></div>
+                    </div>
+                    <div id="printCommentsBox" class="hidden pt-1">
+                        <span class="font-bold text-neutral-900 text-xs uppercase tracking-wider text-neutral-400 block mb-1">Indicaciones</span> <span id="printComments" class="italic text-neutral-600"></span>
+                    </div>
+                </div>
+
+                <ul id="selectedSongsList" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-base text-neutral-800">
+                    <!-- Selected songs appear here with Drag & Drop -->
+                </ul>
+                
+                <div class="mt-10 pt-6 border-t border-neutral-200 text-center">
+                    <p class="text-neutral-500 italic font-serif text-sm">Descarga esta imagen y envíamela por WhatsApp para confirmar tu selección.</p>
+                </div>
+            </div>
+        </section>
+
         <!-- Custom Song Input Section -->
-        <div class="mb-12 bg-zinc-900/30 border border-amber-500/20 p-6 rounded-2xl animate-fade-in delay-200">
+        <div class="mb-12 bg-zinc-900/30 border border-amber-500/20 p-6 rounded-2xl animate-fade-in delay-300">
             <div class="flex items-center gap-3 mb-3">
                 <i data-lucide="music" class="text-amber-500 w-5 h-5"></i>
                 <h3 class="font-serif text-xl text-amber-50">¿No encuentras una canción especial?</h3>
@@ -141,90 +239,42 @@
                 </button>
             </div>
         </div>
-
-        <!-- Loading State -->
-        <div id="loadingState" class="text-center py-20 animate-fade-in delay-300">
-            <i data-lucide="loader-2" class="w-10 h-10 text-amber-500 animate-spin mx-auto mb-4"></i>
-            <p class="text-neutral-400">Cargando repertorio...</p>
-        </div>
-
-        <!-- Song Grid -->
-        <div id="songGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-24 animate-fade-in delay-300 hidden">
-            <!-- Dynamically populated -->
-        </div>
-
-        <!-- SELECTION SECTION (For Screenshot & DragDrop) -->
-        <section id="selectionSection" class="hidden mt-12 animate-fade-in">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 gap-4">
-                <div>
-                    <h2 class="text-3xl font-serif text-amber-500 mb-1">Tu Repertorio</h2>
-                    <p class="text-neutral-400 text-sm mb-2">Arrastra las canciones para cambiar el orden exacto.</p>
-                    <div class="inline-flex items-center gap-2 bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3 py-1.5 rounded-lg text-sm font-medium">
-                        <i data-lucide="timer" class="w-4 h-4"></i>
-                        <span id="timeEstimator">0 min aprox de música</span>
-                    </div>
-                </div>
-                <div class="flex gap-3">
-                    <button onclick="window.downloadSelection()" id="downloadBtn" class="text-xs bg-amber-600 hover:bg-amber-500 text-white transition-colors px-4 py-2 rounded-lg font-bold flex items-center gap-2 shadow-lg shadow-amber-900/20">
-                        <i data-lucide="download" class="w-4 h-4"></i> Descargar Lista
-                    </button>
-                    <button onclick="window.clearSelection()" class="text-xs text-red-400/80 hover:text-red-400 transition-colors bg-red-400/10 px-4 py-2 rounded-lg">Vaciar lista</button>
-                </div>
-            </div>
-            
-            <div id="captureArea" class="p-8 rounded-3xl screenshot-area shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-neutral-200 relative bg-white">
-                <div class="flex items-center justify-between border-b border-neutral-200 pb-6 mb-6">
-                    <div class="flex items-center gap-4">
-                        <img src="https://i.ibb.co/gM83nXf3/Gemini-Generated-Image-c8zfwsc8zfwsc8zf.png" class="w-14 h-14 rounded-full border-2 border-amber-600 shadow-md" crossorigin="anonymous">
-                        <div>
-                            <p class="font-serif font-bold text-2xl leading-none text-neutral-900">Rolando Live Music</p>
-                            <p class="text-xs text-amber-600 uppercase tracking-widest font-semibold mt-1">Selección del Evento</p>
-                        </div>
-                    </div>
-                    <div class="text-right hidden sm:block">
-                        <p id="captureTime" class="text-xs font-bold text-neutral-400 uppercase tracking-wider"></p>
-                        <p id="captureSongsCount" class="text-neutral-900 font-serif font-bold text-xl"></p>
-                    </div>
-                </div>
-                
-                <ul id="selectedSongsList" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-base text-neutral-800">
-                    <!-- Selected songs appear here with Drag & Drop -->
-                </ul>
-                
-                <div class="mt-10 pt-6 border-t border-neutral-200 text-center">
-                    <p class="text-neutral-500 italic font-serif text-sm">Descarga esta imagen y envíamela por WhatsApp para confirmar tu selección.</p>
-                </div>
-            </div>
-        </section>
     </div>
 
     <!-- Footer -->
     <footer class="py-16 px-6 text-center border-t border-white/5 bg-black/50 relative">
         <p class="font-serif text-xl text-amber-500 mb-4">Rolando Live Music</p>
-        <div id="footerSocials" class="flex justify-center gap-6 mb-8 text-neutral-400">
-            <!-- Injected via JS -->
-        </div>
+        <div id="footerSocials" class="flex justify-center gap-6 mb-8 text-neutral-400"></div>
         <p class="text-neutral-600 text-xs">Monterrey, N.L. • Elegancia y sofisticación musical.</p>
         
-        <!-- Discrete Admin Icon -->
         <button onclick="window.openAdmin()" class="absolute bottom-6 left-6 opacity-0 hover:opacity-100 focus:opacity-100 transition-opacity p-2">
             <i data-lucide="lock" class="w-4 h-4 text-neutral-700"></i>
         </button>
     </footer>
 
     <!-- Admin Modal -->
-    <div id="adminModal" class="admin-modal fixed inset-0 z-50 items-center justify-center p-4">
-        <div class="bg-zinc-950 border border-white/10 w-full max-w-3xl max-h-[90vh] rounded-3xl overflow-hidden flex flex-col shadow-2xl">
-            <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/50">
-                <h2 class="text-xl font-bold flex items-center gap-3 text-amber-500 font-serif">
-                    <i data-lucide="shield" class="w-5 h-5"></i> Panel de Administración
+    <div id="adminModal" class="admin-modal fixed inset-0 z-50 items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-zinc-950 border border-white/10 w-full max-w-5xl min-h-[90vh] max-h-[95vh] rounded-3xl overflow-hidden flex flex-col shadow-2xl my-auto">
+            
+            <div class="p-6 border-b border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center bg-zinc-900/50 sticky top-0 z-20 gap-4">
+                <h2 class="text-xl font-bold flex items-center gap-3 text-amber-500 font-serif whitespace-nowrap">
+                    <i data-lucide="shield" class="w-5 h-5"></i> Panel Admin
                 </h2>
-                <button onclick="window.closeAdmin()" class="text-neutral-500 hover:text-white transition-colors bg-white/5 p-2 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+                
+                <!-- Tab Navigation (Hidden in Auth) -->
+                <div id="adminTabsNav" class="hidden flex-1 flex gap-2 overflow-x-auto w-full md:w-auto custom-scrollbar pb-2 md:pb-0">
+                    <button class="tab-btn active px-4 py-2 text-sm font-medium text-amber-500 border-b-2 border-amber-500 whitespace-nowrap transition-colors" onclick="window.switchAdminTab('tabSettings', this)"><i data-lucide="settings" class="w-4 h-4 inline-block mr-1"></i> Configuración</button>
+                    <button class="tab-btn px-4 py-2 text-sm font-medium text-neutral-400 border-b-2 border-transparent hover:text-neutral-200 whitespace-nowrap transition-colors" onclick="window.switchAdminTab('tabCatalog', this)"><i data-lucide="music" class="w-4 h-4 inline-block mr-1"></i> Catálogo</button>
+                    <button class="tab-btn px-4 py-2 text-sm font-medium text-neutral-400 border-b-2 border-transparent hover:text-neutral-200 whitespace-nowrap transition-colors" onclick="window.switchAdminTab('tabRepertoires', this)"><i data-lucide="folder-heart" class="w-4 h-4 inline-block mr-1"></i> Repertorios</button>
+                    <button class="tab-btn px-4 py-2 text-sm font-medium text-neutral-400 border-b-2 border-transparent hover:text-neutral-200 whitespace-nowrap transition-colors" onclick="window.switchAdminTab('tabStats', this)"><i data-lucide="bar-chart-3" class="w-4 h-4 inline-block mr-1"></i> Estadísticas</button>
+                </div>
+
+                <button onclick="window.closeAdmin()" class="text-neutral-500 hover:text-white transition-colors bg-white/5 p-2 rounded-full absolute top-6 right-6 md:relative md:top-auto md:right-auto"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             
             <div id="adminContent" class="p-6 overflow-y-auto flex-1 custom-scrollbar">
                 <!-- Auth Screen -->
-                <div id="adminAuth" class="space-y-6 py-12 text-center">
+                <div id="adminAuth" class="space-y-6 py-20 text-center">
                     <div class="inline-block p-4 rounded-full bg-amber-500/10 mb-2">
                         <i data-lucide="key-round" class="w-8 h-8 text-amber-500"></i>
                     </div>
@@ -234,66 +284,166 @@
                     <button onclick="window.checkAdminPass()" class="bg-amber-600 hover:bg-amber-500 text-white px-10 py-3 rounded-xl transition-colors font-medium mt-4">Acceder</button>
                 </div>
 
-                <!-- Management Screen -->
-                <div id="adminManager" class="hidden space-y-8">
+                <!-- Management Screen (Tabs Container) -->
+                <div id="adminManager" class="hidden">
                     
-                    <!-- Settings Section -->
-                    <section class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
-                        <h3 class="text-sm font-bold uppercase text-amber-500 mb-6 tracking-widest flex items-center gap-2"><i data-lucide="link" class="w-4 h-4"></i> Redes y Contacto</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-xs text-neutral-500 mb-1 block">WhatsApp (Número sin espacios)</label>
-                                <input type="text" id="setWa" class="w-full bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm focus:border-amber-500 outline-none text-neutral-200">
+                    <!-- TAB 1: Settings & Moments -->
+                    <div id="tabSettings" class="admin-tab active space-y-8">
+                        <section class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
+                            <h3 class="text-sm font-bold uppercase text-amber-500 mb-6 tracking-widest">Configuración General y Contacto</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="md:col-span-2">
+                                    <label class="text-xs text-neutral-500 mb-1 block">URL Imagen del Logo (Circular)</label>
+                                    <input type="text" id="setLogoImg" class="w-full bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm focus:border-amber-500 outline-none text-neutral-200" placeholder="https://...">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="text-xs text-neutral-500 mb-1 block">URL Imagen de Fondo (Hero Banner)</label>
+                                    <input type="text" id="setHeroBgImg" class="w-full bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm focus:border-amber-500 outline-none text-neutral-200" placeholder="https://...">
+                                </div>
+                                <div>
+                                    <label class="text-xs text-neutral-500 mb-1 block">WhatsApp (Número sin espacios)</label>
+                                    <input type="text" id="setWa" class="w-full bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm focus:border-amber-500 outline-none text-neutral-200">
+                                </div>
+                                <div>
+                                    <label class="text-xs text-neutral-500 mb-1 block">Enlace Instagram</label>
+                                    <input type="text" id="setIg" class="w-full bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm focus:border-amber-500 outline-none text-neutral-200">
+                                </div>
+                                <div>
+                                    <label class="text-xs text-neutral-500 mb-1 block">Enlace Facebook</label>
+                                    <input type="text" id="setFb" class="w-full bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm focus:border-amber-500 outline-none text-neutral-200">
+                                </div>
+                                <div>
+                                    <label class="text-xs text-neutral-500 mb-1 block">Enlace TikTok</label>
+                                    <input type="text" id="setTk" class="w-full bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm focus:border-amber-500 outline-none text-neutral-200">
+                                </div>
                             </div>
-                            <div>
-                                <label class="text-xs text-neutral-500 mb-1 block">Enlace Instagram</label>
-                                <input type="text" id="setIg" class="w-full bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm focus:border-amber-500 outline-none text-neutral-200">
-                            </div>
-                            <div>
-                                <label class="text-xs text-neutral-500 mb-1 block">Enlace Facebook</label>
-                                <input type="text" id="setFb" class="w-full bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm focus:border-amber-500 outline-none text-neutral-200">
-                            </div>
-                            <div>
-                                <label class="text-xs text-neutral-500 mb-1 block">Enlace TikTok</label>
-                                <input type="text" id="setTk" class="w-full bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm focus:border-amber-500 outline-none text-neutral-200">
-                            </div>
-                        </div>
-                        <button onclick="window.saveAdminSettings()" class="mt-5 w-full bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl p-3 text-sm font-semibold transition-colors border border-white/5">Guardar Configuración</button>
-                    </section>
+                            <button onclick="window.saveAdminSettings(event)" class="mt-5 w-full bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl p-3 text-sm font-semibold transition-colors border border-white/5">Guardar Configuración</button>
+                        </section>
 
-                    <!-- Add Song Section -->
-                    <section>
-                        <h3 class="text-sm font-bold uppercase text-amber-500 mb-4 tracking-widest flex items-center gap-2"><i data-lucide="music-4" class="w-4 h-4"></i> Añadir al Catálogo</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
-                            <input type="text" id="newTitle" placeholder="Título de la canción" class="bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm text-neutral-200 outline-none focus:border-amber-500">
-                            <input type="text" id="newRef" placeholder="Referencia (Artista/Película)" class="bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm text-neutral-200 outline-none focus:border-amber-500">
-                            <select id="newGenre" class="bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm text-neutral-200 outline-none focus:border-amber-500 cursor-pointer">
-                                <!-- Populated from momentGenres -->
-                            </select>
-                            <input type="text" id="newLink" placeholder="Enlace de YouTube o Spotify (Opcional)" class="bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm text-neutral-200 outline-none focus:border-amber-500">
-                            <button onclick="window.addNewSong()" class="bg-amber-600 hover:bg-amber-500 text-white rounded-lg p-3 text-sm font-bold transition-all col-span-1 md:col-span-2">Añadir Pieza al Catálogo</button>
-                        </div>
-                    </section>
+                        <section class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
+                            <h3 class="text-sm font-bold uppercase text-amber-500 mb-4 tracking-widest">Gestión de Momentos del Evento</h3>
+                            <p class="text-xs text-neutral-500 mb-4">Añade o elimina las categorías para filtrar el catálogo.</p>
+                            <div class="flex gap-2 mb-4">
+                                <input type="text" id="newMomentInput" placeholder="Ej. Baile Sorpresa" class="flex-1 bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm text-neutral-200 outline-none focus:border-amber-500">
+                                <button onclick="window.addMoment()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 rounded-lg font-bold transition-all"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                            </div>
+                            <div id="momentsAdminList" class="flex flex-wrap gap-2">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </section>
+                    </div>
 
-                    <!-- Manage and CSV Import/Export -->
-                    <section>
-                        <div class="flex justify-between items-end mb-4">
-                            <h3 class="text-sm font-bold uppercase text-amber-500 tracking-widest flex items-center gap-2"><i data-lucide="database" class="w-4 h-4"></i> Gestionar & CSV</h3>
-                            <div class="flex gap-2">
-                                <button onclick="document.getElementById('csvFileInput').click()" class="text-xs bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded text-neutral-300 border border-white/10 transition-colors flex items-center gap-1">
-                                    <i data-lucide="upload" class="w-3 h-3"></i> Importar CSV
-                                </button>
-                                <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="window.importCSV(event)">
+                    <!-- TAB 2: Catalog (Songs CRUD) -->
+                    <div id="tabCatalog" class="admin-tab space-y-8">
+                        <section id="songFormSection">
+                            <h3 class="text-sm font-bold uppercase text-amber-500 mb-4 tracking-widest" id="songFormTitle">Añadir Pieza al Catálogo</h3>
+                            <div class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <input type="text" id="newTitle" placeholder="Título de la canción" class="bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm text-neutral-200 outline-none focus:border-amber-500">
+                                    <input type="text" id="newRef" placeholder="Referencia (Artista/Película)" class="bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm text-neutral-200 outline-none focus:border-amber-500">
+                                    <input type="text" id="newLink" placeholder="Enlace de YouTube o Spotify (Opcional)" class="bg-zinc-900 border border-white/10 rounded-lg p-3 text-sm text-neutral-200 outline-none focus:border-amber-500 md:col-span-2">
+                                </div>
                                 
-                                <button onclick="window.exportCSV()" class="text-xs bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded text-neutral-300 border border-white/10 transition-colors flex items-center gap-1">
-                                    <i data-lucide="download" class="w-3 h-3"></i> Exportar CSV
+                                <p class="text-xs text-neutral-500 mb-2">Selecciona los momentos donde encaja esta pieza:</p>
+                                <div id="momentCheckboxes" class="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4 bg-zinc-950 p-4 rounded-lg border border-white/5 max-h-40 overflow-y-auto custom-scrollbar">
+                                    <!-- Checkboxes populated via JS -->
+                                </div>
+
+                                <div class="flex gap-2">
+                                    <button onclick="window.saveSong(event)" id="saveSongBtn" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white rounded-lg p-3 text-sm font-bold transition-all">Añadir Pieza</button>
+                                    <button onclick="window.cancelEditSong()" id="cancelEditBtn" class="hidden bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg p-3 text-sm font-bold transition-all px-6">Cancelar</button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section>
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-4 gap-4">
+                                <h3 class="text-sm font-bold uppercase text-amber-500 tracking-widest">Catálogo Actual</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    <div class="relative">
+                                        <i data-lucide="search" class="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-neutral-500"></i>
+                                        <input type="text" id="adminSearch" placeholder="Buscar canción..." class="bg-zinc-900 border border-white/10 text-xs rounded pl-7 pr-2 py-1.5 focus:outline-none focus:border-amber-500 text-neutral-200" oninput="window.renderAdminList()">
+                                    </div>
+                                    <button onclick="document.getElementById('csvFileInput').click()" class="text-xs bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded text-neutral-300 border border-white/10 transition-colors flex items-center gap-1">
+                                        <i data-lucide="upload" class="w-3 h-3"></i> Importar CSV
+                                    </button>
+                                    <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="window.importCSV(event)">
+                                    <button onclick="window.exportCSV()" class="text-xs bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded text-neutral-300 border border-white/10 transition-colors flex items-center gap-1">
+                                        <i data-lucide="download" class="w-3 h-3"></i> Exportar CSV
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-12 gap-2 px-4 py-2 text-[10px] uppercase font-bold text-neutral-500 border-b border-white/10 mb-2">
+                                <div class="col-span-5">Pieza / Referencia</div>
+                                <div class="col-span-4">Momentos</div>
+                                <div class="col-span-1 text-center" title="Veces solicitada">Clics</div>
+                                <div class="col-span-2 text-right">Acciones</div>
+                            </div>
+
+                            <div id="adminList" class="space-y-1 border border-white/5 p-2 rounded-xl bg-zinc-900/10 max-h-96 overflow-y-auto custom-scrollbar">
+                                <!-- List populated via JS -->
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- TAB 3: Repertoires (Clients CRM) -->
+                    <div id="tabRepertoires" class="admin-tab space-y-8">
+                        <section>
+                            <div class="flex justify-between items-end mb-4">
+                                <h3 class="text-sm font-bold uppercase text-amber-500 tracking-widest">Repertorios Solicitados por Clientes</h3>
+                                <button onclick="window.exportRepertoiresCSV()" class="text-xs bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded text-neutral-300 border border-white/10 transition-colors flex items-center gap-1">
+                                    <i data-lucide="download" class="w-3 h-3"></i> Exportar CRM a CSV
                                 </button>
                             </div>
+                            
+                            <div class="grid grid-cols-12 gap-2 px-4 py-2 text-[10px] uppercase font-bold text-neutral-500 border-b border-white/10 mb-2">
+                                <div class="col-span-3">Cliente & Contacto</div>
+                                <div class="col-span-3">Evento & Fecha</div>
+                                <div class="col-span-3">Selección</div>
+                                <div class="col-span-3 text-right">Acciones</div>
+                            </div>
+
+                            <div id="repertoiresAdminList" class="space-y-1 border border-white/5 p-2 rounded-xl bg-zinc-900/10 min-h-[300px] max-h-[600px] overflow-y-auto custom-scrollbar">
+                                <!-- List populated via JS -->
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- TAB 4: Statistics (Charts) -->
+                    <div id="tabStats" class="admin-tab space-y-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-bold uppercase text-amber-500 tracking-widest">Dashboard de Métricas</h3>
+                            <button onclick="window.renderCharts()" class="text-xs text-neutral-400 hover:text-white flex items-center gap-1"><i data-lucide="refresh-cw" class="w-3 h-3"></i> Actualizar Gráficas</button>
                         </div>
-                        <div id="adminList" class="space-y-2 border border-white/5 p-4 rounded-2xl bg-zinc-900/10 max-h-60 overflow-y-auto custom-scrollbar">
-                            <!-- List for deletion -->
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Piezas por Momento -->
+                            <div class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
+                                <h4 class="text-xs font-bold text-neutral-300 mb-4 text-center">Canciones disponibles por Momento</h4>
+                                <div class="relative h-64">
+                                    <canvas id="chartMoments"></canvas>
+                                </div>
+                            </div>
+                            
+                            <!-- Top Clics -->
+                            <div class="bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
+                                <h4 class="text-xs font-bold text-neutral-300 mb-4 text-center">Top 10 Piezas Más Solicitadas</h4>
+                                <div class="relative h-64">
+                                    <canvas id="chartClicks"></canvas>
+                                </div>
+                            </div>
+                            
+                            <!-- Repertorios por Fecha (Line Chart) -->
+                            <div class="md:col-span-2 bg-zinc-900/30 p-6 rounded-2xl border border-white/5">
+                                <h4 class="text-xs font-bold text-neutral-300 mb-4 text-center">Repertorios Generados (Histórico)</h4>
+                                <div class="relative h-64">
+                                    <canvas id="chartRepertoires"></canvas>
+                                </div>
+                            </div>
                         </div>
-                    </section>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -302,10 +452,9 @@
     <!-- Firebase Integration & Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc, setDoc, getDocs, updateDoc, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-        // User's Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAHc_iwOzveVV13qbQljbB9GC029cIhVkY",
             authDomain: "selectorcancionesrlm.firebaseapp.com",
@@ -320,34 +469,32 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- Data Configuration & Moments ---
-        const momentGenres = [
-            "Ceremonia (Religiosa / Civil)", 
-            "Entrada de los Novios",
-            "Recepción y Cóctel", 
-            "Banquete (Cena)", 
-            "Primer Baile (Vals)", 
-            "Bailables y Fiesta", 
-            "Propuestas de Matrimonio",
-            "Jazz, Bossa & Lounge",
-            "Clásicos Románticos",
-            "Pop & Moderno"
-        ];
-
+        // --- Defaults ---
+        const defaultMoments = ["Ceremonia", "Entrada de los Novios", "Recepción y Cóctel", "Banquete (Cena)", "Primer Baile (Vals)", "Bailables y Fiesta", "Propuestas de Matrimonio"];
         const defaultSettings = {
             wa: "8110474854",
             ig: "https://www.instagram.com/rolandolivemusic/",
             fb: "https://www.facebook.com/rolandolivemusic",
-            tk: "https://www.tiktok.com/@rolandolivemusic"
+            tk: "https://www.tiktok.com/@rolandolivemusic",
+            logoImage: "https://i.ibb.co/gM83nXf3/Gemini-Generated-Image-c8zfwsc8zfwsc8zf.png",
+            heroBgImage: "https://images.unsplash.com/photo-1520114002624-912b6f4cce28?q=80&w=2000&auto=format&fit=crop"
         };
 
-        // State variables
+        // --- State ---
         window.songs = [];
+        window.repertoires = [];
         window.siteSettings = defaultSettings;
+        window.activeMoments = defaultMoments;
         window.orderedSelection = []; 
         window.dragStartIndex = null;
+        window.editingSongId = null;
+        window.adminListenersStarted = false;
 
-        // SVGs for Social Media
+        // Charts instances
+        let chartInstanceMoments = null;
+        let chartInstanceClicks = null;
+        let chartInstanceRepertoires = null;
+
         const iconsSVG = {
             ig: `<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>`,
             fb: `<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>`,
@@ -355,41 +502,71 @@
             tk: `<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>`
         };
 
-        // --- Firebase Auth & Initialization ---
+        // --- Firebase Auth & Init ---
         signInAnonymously(auth).catch((error) => console.error("Firebase Auth Error:", error));
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Listen to Songs
+                // Listen Songs (Public)
                 onSnapshot(collection(db, "rlm_songs"), (snapshot) => {
                     window.songs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     
                     document.getElementById('loadingState').classList.add('hidden');
                     document.getElementById('songGrid').classList.remove('hidden');
                     
-                    window.renderFilters();
                     window.renderGrid();
-                    window.renderAdminList();
+                    if(!document.getElementById('adminManager').classList.contains('hidden')) {
+                        window.renderAdminList();
+                    }
+                }, (error) => {
+                    console.error("Error cargando canciones:", error);
+                    document.getElementById('loadingText').innerText = "Error cargando el repertorio.";
                 });
 
-                // Listen to Settings
+                // Listen Settings (Public)
                 onSnapshot(doc(db, "rlm_settings", "general"), (docSnap) => {
                     if (docSnap.exists()) {
-                        window.siteSettings = docSnap.data();
+                        window.siteSettings = { ...defaultSettings, ...docSnap.data() };
                     } else {
-                        // Seed default settings if none exist
-                        setDoc(doc(db, "rlm_settings", "general"), defaultSettings);
+                        setDoc(doc(db, "rlm_settings", "general"), defaultSettings).catch(e => console.warn(e));
                     }
-                    window.renderSocialLinks();
+                    window.renderSiteVisuals();
                     if(!document.getElementById('adminManager').classList.contains('hidden')) {
                         window.loadAdminSettings();
                     }
-                });
+                }, (error) => console.warn("Error cargando ajustes:", error));
+
+                // Listen Moments (Public)
+                onSnapshot(doc(db, "rlm_settings", "moments"), (docSnap) => {
+                    if (docSnap.exists() && docSnap.data().list) {
+                        window.activeMoments = docSnap.data().list;
+                    } else {
+                        setDoc(doc(db, "rlm_settings", "moments"), { list: defaultMoments }).catch(e => console.warn(e));
+                    }
+                    window.renderFilters();
+                    window.renderMomentsAdmin();
+                    window.renderMomentCheckboxes();
+                }, (error) => console.warn("Error cargando momentos:", error));
             }
         });
 
-        // --- Core UI Functions ---
-        window.renderSocialLinks = () => {
+        // Initialize Admin-only Listeners
+        window.startAdminListeners = () => {
+            if(window.adminListenersStarted) return;
+            window.adminListenersStarted = true;
+
+            // Listen Repertoires (Admin ONLY)
+            onSnapshot(collection(db, "rlm_repertoires"), (snapshot) => {
+                window.repertoires = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                window.repertoires.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                window.renderRepertoiresAdmin();
+            }, (error) => {
+                console.error("Error obteniendo repertorios (posible falta de permisos):", error);
+            });
+        };
+
+        // --- UI Rendering ---
+        window.renderSiteVisuals = () => {
             const createSocialHTML = (icon, url, colorClass) => {
                 if(!url) return '';
                 const href = url.startsWith('http') || url.startsWith('wa.me') ? url : (url.length === 10 ? `https://wa.me/52${url}` : url);
@@ -407,19 +584,29 @@
 
             document.getElementById('headerSocials').innerHTML = linksHTML;
             document.getElementById('footerSocials').innerHTML = linksHTML;
+
+            if(window.siteSettings.logoImage) {
+                document.getElementById('heroImageEl').src = window.siteSettings.logoImage;
+                document.getElementById('captureLogo').src = window.siteSettings.logoImage;
+            }
+            
+            if(window.siteSettings.heroBgImage) {
+                document.getElementById('heroSection').style.backgroundImage = `linear-gradient(to bottom, rgba(9, 9, 11, 0.3), rgba(9, 9, 11, 1)), url('${window.siteSettings.heroBgImage}')`;
+            }
         };
 
         window.renderFilters = () => {
             const filter = document.getElementById('genreFilter');
-            const newGenreSelect = document.getElementById('newGenre');
-            
             filter.innerHTML = '<option value="Todos">Filtrar por momento...</option>';
-            newGenreSelect.innerHTML = '';
-
-            momentGenres.forEach(g => {
+            window.activeMoments.forEach(g => {
                 filter.innerHTML += `<option value="${g}">${g}</option>`;
-                newGenreSelect.innerHTML += `<option value="${g}">${g}</option>`;
             });
+        };
+
+        const getGenresArray = (generoData) => {
+            if(Array.isArray(generoData)) return generoData;
+            if(typeof generoData === 'string') return [generoData];
+            return [];
         };
 
         window.renderGrid = () => {
@@ -429,43 +616,51 @@
 
             const filtered = window.songs.filter(s => {
                 const matchesSearch = s.titulo.toLowerCase().includes(search) || s.ref.toLowerCase().includes(search);
-                const matchesGenre = genre === "Todos" || s.genero === genre;
+                const genresArr = getGenresArray(s.genero);
+                const matchesGenre = genre === "Todos" || genresArr.includes(genre);
                 return matchesSearch && matchesGenre;
             });
 
             grid.innerHTML = filtered.map(s => {
                 const isSelected = window.orderedSelection.some(item => item.id === s.id);
+                const genresArr = getGenresArray(s.genero);
+                const displayGenre = genresArr.length > 0 ? genresArr[0] + (genresArr.length > 1 ? ` (+${genresArr.length - 1})` : '') : 'General';
+                
                 const playBtn = s.link 
                     ? `<button onclick="event.stopPropagation(); window.open('${s.link}', '_blank')" class="ml-2 text-amber-500 hover:text-white bg-amber-500/10 hover:bg-amber-600 rounded-full p-1.5 transition-colors" title="Escuchar"><i data-lucide="play" class="w-3.5 h-3.5"></i></button>` 
                     : '';
 
                 return `
-                <div onclick="window.toggleCatalogSong('${s.id}')" class="song-card cursor-pointer bg-zinc-900/40 border border-white/5 rounded-2xl p-6 hover:bg-zinc-800 transition-all ${isSelected ? 'selected' : ''} group relative">
-                    <div class="flex justify-between items-start mb-3">
-                        <span class="text-[10px] uppercase font-bold tracking-widest text-amber-500/70">${s.genero}</span>
-                        <div class="flex items-center">
-                            ${playBtn}
-                            <div class="ml-3">
-                                ${isSelected ? '<i data-lucide="check-circle" class="w-5 h-5 text-amber-500"></i>' : '<i data-lucide="plus-circle" class="w-5 h-5 text-neutral-600 group-hover:text-amber-500/50 transition-colors"></i>'}
+                <div onclick="window.toggleCatalogSong('${s.id}')" class="song-card cursor-pointer bg-zinc-900/40 border border-white/5 rounded-2xl p-6 hover:bg-zinc-800 transition-all ${isSelected ? 'selected' : ''} group relative flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-[10px] uppercase font-bold tracking-widest text-amber-500/70 truncate mr-2" title="${genresArr.join(', ')}">${displayGenre}</span>
+                            <div class="flex items-center flex-shrink-0">
+                                ${playBtn}
+                                <div class="ml-3">
+                                    ${isSelected ? '<i data-lucide="check-circle" class="w-5 h-5 text-amber-500"></i>' : '<i data-lucide="plus-circle" class="w-5 h-5 text-neutral-600 group-hover:text-amber-500/50 transition-colors"></i>'}
+                                </div>
                             </div>
                         </div>
+                        <h3 class="text-lg font-bold ${isSelected ? 'text-amber-400' : 'text-neutral-200'} transition-colors font-serif tracking-wide leading-tight">${s.titulo}</h3>
+                        <p class="text-xs text-neutral-500 italic mt-2">${s.ref}</p>
                     </div>
-                    <h3 class="text-lg font-bold ${isSelected ? 'text-amber-400' : 'text-neutral-200'} transition-colors font-serif tracking-wide pr-8">${s.titulo}</h3>
-                    <p class="text-xs text-neutral-500 italic mt-1">${s.ref}</p>
+                    ${s.clicks > 10 ? `<div class="mt-4 text-[10px] text-amber-600/50 flex items-center gap-1"><i data-lucide="flame" class="w-3 h-3"></i> Muy solicitada</div>` : ''}
                 </div>
             `}).join('');
             
             if(window.lucide) window.lucide.createIcons();
         };
 
-        // --- Selection & Time Estimator Logic ---
-        window.toggleCatalogSong = (id) => {
+        // --- Selection & Clicks Logic ---
+        window.toggleCatalogSong = async (id) => {
             const existingIndex = window.orderedSelection.findIndex(s => s.id === id);
             if (existingIndex >= 0) {
                 window.orderedSelection.splice(existingIndex, 1);
             } else {
                 const song = window.songs.find(s => s.id === id);
                 window.orderedSelection.push({...song, isCustom: false});
+                updateDoc(doc(db, "rlm_songs", id), { clicks: increment(1) }).catch(e=>console.warn("Click track error", e));
             }
             window.renderGrid();
             window.updateSelectionView();
@@ -476,16 +671,13 @@
             const val = input.value.trim();
             if(!val) return;
 
-            const newCustom = {
+            window.orderedSelection.push({
                 id: 'custom_' + Date.now(),
                 titulo: val,
                 ref: 'Petición Especial',
                 isCustom: true
-            };
-
-            window.orderedSelection.push(newCustom);
+            });
             input.value = '';
-            
             window.updateSelectionView();
             document.getElementById('selectionSection').scrollIntoView({ behavior: 'smooth' });
         };
@@ -515,7 +707,7 @@
             window.updateSelectionView();
         };
 
-        // --- Drag & Drop Implementation ---
+        // --- Drag & Drop & Print View ---
         window.updateSelectionView = () => {
             const section = document.getElementById('selectionSection');
             const list = document.getElementById('selectedSongsList');
@@ -553,11 +745,7 @@
                         ${s.isCustom ? `<span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider inline-block">Especial</span>` : `<span class="text-neutral-500 text-xs block break-words leading-snug">${s.ref}</span>`}
                     </div>
 
-                    ${s.isCustom ? `
-                        <button onclick="window.editCustomSong(${index})" class="text-neutral-400 hover:text-amber-500 p-2 transition-colors flex-shrink-0" title="Editar">
-                            <i data-lucide="pencil" class="w-4 h-4"></i>
-                        </button>
-                    ` : ''}
+                    ${s.isCustom ? `<button onclick="window.editCustomSong(${index})" class="text-neutral-400 hover:text-amber-500 p-2 transition-colors flex-shrink-0" title="Editar"><i data-lucide="pencil" class="w-4 h-4"></i></button>` : ''}
                     <button onclick="window.removeSelected(${index})" class="text-neutral-300 hover:text-red-500 p-2 transition-colors flex-shrink-0">
                         <i data-lucide="x" class="w-4 h-4"></i>
                     </button>
@@ -573,24 +761,12 @@
             e.dataTransfer.setData('text/plain', index);
             setTimeout(() => e.target.classList.add('dragging'), 0);
         };
-
-        window.handleDragOver = (e) => {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            const item = e.target.closest('li');
-            if(item && !item.classList.contains('dragging')) item.classList.add('drag-over');
-        };
-
-        window.handleDragLeave = (e) => {
-            const item = e.target.closest('li');
-            if(item) item.classList.remove('drag-over');
-        };
-
+        window.handleDragOver = (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; const item = e.target.closest('li'); if(item && !item.classList.contains('dragging')) item.classList.add('drag-over'); };
+        window.handleDragLeave = (e) => { const item = e.target.closest('li'); if(item) item.classList.remove('drag-over'); };
         window.handleDrop = (e, targetIndex) => {
             e.stopPropagation();
             const item = e.target.closest('li');
             if(item) item.classList.remove('drag-over');
-            
             if (window.dragStartIndex !== null && window.dragStartIndex !== targetIndex) {
                 const draggedItem = window.orderedSelection[window.dragStartIndex];
                 window.orderedSelection.splice(window.dragStartIndex, 1);
@@ -599,38 +775,76 @@
             }
             return false;
         };
+        window.handleDragEnd = (e) => { e.target.classList.remove('dragging'); document.querySelectorAll('.drag-item').forEach(item => item.classList.remove('drag-over')); window.dragStartIndex = null; };
 
-        window.handleDragEnd = (e) => {
-            e.target.classList.remove('dragging');
-            document.querySelectorAll('.drag-item').forEach(item => item.classList.remove('drag-over'));
-            window.dragStartIndex = null;
-        };
-
-        // --- Download Selection Logic ---
-        window.downloadSelection = () => {
+        // --- Screenshot Export & DB Save ---
+        window.downloadSelection = async () => {
             const element = document.getElementById('captureArea');
             const btn = document.getElementById('downloadBtn');
+            const infoBox = document.getElementById('captureClientInfo');
+            const commentsBox = document.getElementById('printCommentsBox');
+            
+            const cEventType = document.getElementById('clientEventType').value;
+            if (!cEventType) {
+                alert("Por favor, selecciona el 'Tipo de Evento' para poder descargar tu listado.");
+                document.getElementById('clientEventType').focus();
+                return;
+            }
+
             const originalText = btn.innerHTML;
             
+            // Client info
+            const cName = document.getElementById('clientName').value.trim();
+            const cPhone = document.getElementById('clientPhone').value.trim();
+            const cDate = document.getElementById('clientDate').value;
+            const cComments = document.getElementById('clientComments').value.trim();
+            
+            if(cName || cPhone || cEventType || cDate || cComments) {
+                document.getElementById('printName').innerText = cName || '-';
+                document.getElementById('printPhone').innerText = cPhone || '-';
+                document.getElementById('printEventType').innerText = cEventType || '-';
+                document.getElementById('printDate').innerText = cDate || '-';
+                
+                if (cComments) {
+                    document.getElementById('printComments').innerText = cComments;
+                    commentsBox.classList.remove('hidden');
+                } else {
+                    commentsBox.classList.add('hidden');
+                }
+                infoBox.classList.remove('hidden');
+            } else {
+                infoBox.classList.add('hidden');
+            }
+
+            // Save to DB
+            if (window.orderedSelection.length > 0) {
+                try {
+                    await addDoc(collection(db, "rlm_repertoires"), {
+                        clientName: cName,
+                        clientPhone: cPhone,
+                        eventType: cEventType || "No especificado",
+                        clientDate: cDate,
+                        comments: cComments,
+                        songs: window.orderedSelection.map(s => ({ titulo: s.titulo, ref: s.ref, isCustom: s.isCustom || false })),
+                        timestamp: new Date().toISOString()
+                    });
+                } catch (e) { console.error("Error guardar rep:", e); }
+            }
+
             btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Generando...';
             if(window.lucide) window.lucide.createIcons();
             
             const noCaptureElements = element.querySelectorAll('.cursor-grab, button');
             noCaptureElements.forEach(el => el.style.opacity = '0');
 
-            // Garantizar carga de fuentes para evitar cortes de texto
             document.fonts.ready.then(() => {
                 setTimeout(() => {
-                    html2canvas(element, {
-                        scale: 2, 
-                        backgroundColor: "#ffffff",
-                        useCORS: true,
-                        logging: false
-                    }).then(canvas => {
+                    html2canvas(element, { scale: 2, backgroundColor: "#ffffff", useCORS: true, logging: false }).then(canvas => {
                         noCaptureElements.forEach(el => el.style.opacity = '1');
+                        infoBox.classList.add('hidden'); 
                         
                         const link = document.createElement('a');
-                        link.download = 'Repertorio_Rolando_Live_Music.png';
+                        link.download = `Repertorio_Rolando_${cDate || 'Evento'}.png`;
                         link.href = canvas.toDataURL('image/png');
                         link.click();
                         
@@ -646,21 +860,22 @@
                             if(window.lucide) window.lucide.createIcons();
                         }, 3000);
                     });
-                }, 400); // Pequeño retraso para asentar CSS
+                }, 500); 
             });
         };
 
-        // --- Admin Logic & Firebase Writes ---
+        // --- Admin Tabs & Setup ---
         window.openAdmin = () => {
             document.getElementById('adminModal').classList.add('active');
             document.getElementById('adminAuth').classList.remove('hidden');
             document.getElementById('adminManager').classList.add('hidden');
+            document.getElementById('adminTabsNav').classList.add('hidden');
             document.getElementById('adminPass').value = '';
-            document.getElementById('loginError').classList.add('hidden');
         };
 
-        window.closeAdmin = () => {
-            document.getElementById('adminModal').classList.remove('active');
+        window.closeAdmin = () => { 
+            document.getElementById('adminModal').classList.remove('active'); 
+            window.cancelEditSong(); 
         };
 
         window.checkAdminPass = () => {
@@ -668,113 +883,341 @@
             if (pass === 'rch29389') {
                 document.getElementById('adminAuth').classList.add('hidden');
                 document.getElementById('adminManager').classList.remove('hidden');
+                document.getElementById('adminTabsNav').classList.remove('hidden');
+                
                 window.loadAdminSettings();
+                window.renderMomentsAdmin();
+                window.renderMomentCheckboxes();
                 window.renderAdminList();
+                window.startAdminListeners();
             } else {
                 document.getElementById('loginError').classList.remove('hidden');
             }
         };
 
+        window.switchAdminTab = (tabId, btnElement) => {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active', 'text-amber-500', 'border-amber-500');
+                b.classList.add('text-neutral-400', 'border-transparent');
+            });
+            
+            document.getElementById(tabId).classList.add('active');
+            
+            btnElement.classList.add('active', 'text-amber-500', 'border-amber-500');
+            btnElement.classList.remove('text-neutral-400', 'border-transparent');
+
+            if(tabId === 'tabStats') window.renderCharts();
+        };
+
+        // --- Tab 1: Config & Momentos ---
         window.loadAdminSettings = () => {
+            document.getElementById('setLogoImg').value = window.siteSettings.logoImage || "";
+            document.getElementById('setHeroBgImg').value = window.siteSettings.heroBgImage || "";
             document.getElementById('setWa').value = window.siteSettings.wa || "";
             document.getElementById('setIg').value = window.siteSettings.ig || "";
             document.getElementById('setFb').value = window.siteSettings.fb || "";
             document.getElementById('setTk').value = window.siteSettings.tk || "";
         };
 
-        window.saveAdminSettings = async () => {
+        window.saveAdminSettings = async (event) => {
             const btn = event.target;
             const originalText = btn.innerText;
             btn.innerText = "Guardando...";
-
             const newSettings = {
+                logoImage: document.getElementById('setLogoImg').value.trim(),
+                heroBgImage: document.getElementById('setHeroBgImg').value.trim(),
                 wa: document.getElementById('setWa').value.trim(),
                 ig: document.getElementById('setIg').value.trim(),
                 fb: document.getElementById('setFb').value.trim(),
                 tk: document.getElementById('setTk').value.trim()
             };
-
             await setDoc(doc(db, "rlm_settings", "general"), newSettings);
-            
             btn.innerText = "¡Guardado!";
             btn.classList.add("bg-green-600", "text-white");
-            setTimeout(() => {
-                btn.innerText = originalText;
-                btn.classList.remove("bg-green-600");
-            }, 2000);
+            setTimeout(() => { btn.innerText = originalText; btn.classList.remove("bg-green-600"); }, 2000);
         };
 
-        window.renderAdminList = () => {
-            const list = document.getElementById('adminList');
-            list.innerHTML = window.songs.map(s => `
-                <div class="flex items-center justify-between bg-zinc-800/50 p-3 rounded-xl border border-white/5">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <p class="text-sm font-bold text-neutral-200">${s.titulo}</p>
-                            ${s.link ? `<a href="${s.link}" target="_blank" class="text-amber-500 hover:text-amber-400"><i data-lucide="link-2" class="w-3 h-3"></i></a>` : ''}
-                        </div>
-                        <p class="text-[10px] text-neutral-500">${s.genero} | ${s.ref}</p>
-                    </div>
-                    <button onclick="window.deleteSong('${s.id}')" class="text-red-400 hover:bg-red-400/20 p-2 rounded-lg transition-colors">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    </button>
+        window.renderMomentsAdmin = () => {
+            const list = document.getElementById('momentsAdminList');
+            list.innerHTML = window.activeMoments.map((m, index) => `
+                <div class="bg-zinc-800 text-neutral-200 text-xs px-3 py-1.5 rounded-full flex items-center gap-2 border border-white/10">
+                    <span>${m}</span>
+                    <button onclick="window.deleteMoment(${index})" class="text-red-400 hover:text-red-300"><i data-lucide="x" class="w-3 h-3"></i></button>
                 </div>
             `).join('');
             if(window.lucide) window.lucide.createIcons();
         };
 
-        window.addNewSong = async () => {
-            const title = document.getElementById('newTitle').value.trim();
-            const ref = document.getElementById('newRef').value.trim();
-            const genre = document.getElementById('newGenre').value;
-            const link = document.getElementById('newLink').value.trim();
-
-            if (!title) return;
-
-            const btn = event.target;
-            const originalText = btn.innerText;
-            btn.innerText = "Añadiendo...";
-
-            await addDoc(collection(db, "rlm_songs"), {
-                titulo: title,
-                ref: ref || "S/R",
-                genero: genre,
-                link: link
-            });
-            
-            document.getElementById('newTitle').value = '';
-            document.getElementById('newRef').value = '';
-            document.getElementById('newLink').value = '';
-            
-            btn.innerText = "Añadir Pieza al Catálogo";
+        window.addMoment = async () => {
+            const val = document.getElementById('newMomentInput').value.trim();
+            if(!val || window.activeMoments.includes(val)) return;
+            const newArray = [...window.activeMoments, val];
+            await setDoc(doc(db, "rlm_settings", "moments"), { list: newArray });
+            document.getElementById('newMomentInput').value = '';
         };
 
-        window.deleteSong = async (id) => {
-            if(confirm("¿Seguro que deseas eliminar esta pieza del catálogo?")) {
-                await deleteDoc(doc(db, "rlm_songs", id));
-                
-                const selIndex = window.orderedSelection.findIndex(s => s.id === id);
-                if(selIndex >= 0) {
-                    window.orderedSelection.splice(selIndex, 1);
-                    window.updateSelectionView();
-                }
+        window.deleteMoment = async (index) => {
+            if(confirm("¿Eliminar este momento? Las canciones asignadas seguirán existiendo pero no se filtrarán por esto.")) {
+                const newArray = [...window.activeMoments];
+                newArray.splice(index, 1);
+                await setDoc(doc(db, "rlm_settings", "moments"), { list: newArray });
             }
         };
 
-        // --- CSV System ---
-        const escapeCSV = (str) => `"${(str || '').replace(/"/g, '""')}"`;
+        window.renderMomentCheckboxes = () => {
+            const container = document.getElementById('momentCheckboxes');
+            container.innerHTML = window.activeMoments.map(m => `
+                <label class="flex items-center gap-2 text-xs text-neutral-300 cursor-pointer">
+                    <input type="checkbox" value="${m}" class="song-moment-cb rounded bg-zinc-800 border-white/20 text-amber-500 focus:ring-amber-500">
+                    ${m}
+                </label>
+            `).join('');
+        };
 
-        window.exportCSV = () => {
-            let csvContent = "Titulo,Referencia,Momento,Enlace\n";
-            window.songs.forEach(s => {
-                csvContent += `${escapeCSV(s.titulo)},${escapeCSV(s.ref)},${escapeCSV(s.genero)},${escapeCSV(s.link)}\n`;
-            });
+        // --- Tab 2: Catálogo CRUD ---
+        window.renderAdminList = () => {
+            const list = document.getElementById('adminList');
+            const search = document.getElementById('adminSearch').value.toLowerCase();
             
+            const filtered = window.songs.filter(s => s.titulo.toLowerCase().includes(search) || s.ref.toLowerCase().includes(search));
+
+            list.innerHTML = filtered.map(s => {
+                const genresArr = getGenresArray(s.genero);
+                return `
+                <div class="grid grid-cols-12 gap-2 items-center bg-zinc-800/40 hover:bg-zinc-800/80 p-2.5 rounded-lg border border-white/5 transition-colors">
+                    <div class="col-span-5 min-w-0">
+                        <div class="flex items-center gap-2">
+                            <p class="text-xs font-bold text-neutral-200 truncate">${s.titulo}</p>
+                            ${s.link ? `<a href="${s.link}" target="_blank" class="text-amber-500 hover:text-amber-400 flex-shrink-0"><i data-lucide="link-2" class="w-3 h-3"></i></a>` : ''}
+                        </div>
+                        <p class="text-[9px] text-neutral-500 truncate">${s.ref}</p>
+                    </div>
+                    <div class="col-span-4 text-[9px] text-neutral-400 flex flex-wrap gap-1">
+                        ${genresArr.slice(0,2).map(g => `<span class="bg-zinc-900 px-1.5 py-0.5 rounded border border-white/10 truncate max-w-[80px]" title="${g}">${g}</span>`).join('')}
+                        ${genresArr.length > 2 ? `<span class="text-[9px]">+${genresArr.length - 2}</span>` : ''}
+                    </div>
+                    <div class="col-span-1 text-center">
+                        <span class="text-xs font-mono font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded">${s.clicks || 0}</span>
+                    </div>
+                    <div class="col-span-2 flex justify-end gap-1">
+                        <button onclick="window.editSong('${s.id}')" class="text-blue-400 hover:bg-blue-400/20 p-1.5 rounded transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
+                        <button onclick="window.deleteSong('${s.id}')" class="text-red-400 hover:bg-red-400/20 p-1.5 rounded transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                    </div>
+                </div>
+            `}).join('');
+            if(window.lucide) window.lucide.createIcons();
+        };
+
+        window.saveSong = async (event) => {
+            const title = document.getElementById('newTitle').value.trim();
+            const ref = document.getElementById('newRef').value.trim();
+            const link = document.getElementById('newLink').value.trim();
+            
+            const checkboxes = document.querySelectorAll('.song-moment-cb:checked');
+            const selectedMoments = Array.from(checkboxes).map(cb => cb.value);
+
+            if (!title) return alert("El título es obligatorio.");
+            if (selectedMoments.length === 0) return alert("Selecciona al menos un momento.");
+
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "Guardando...";
+
+            const songData = { titulo: title, ref: ref || "S/R", genero: selectedMoments, link: link };
+
+            if (window.editingSongId) {
+                await updateDoc(doc(db, "rlm_songs", window.editingSongId), songData);
+            } else {
+                songData.clicks = 0;
+                await addDoc(collection(db, "rlm_songs"), songData);
+            }
+            
+            window.cancelEditSong();
+            btn.innerText = "¡Listo!";
+            setTimeout(() => { btn.innerText = "Añadir Pieza"; }, 1500);
+        };
+
+        window.editSong = (id) => {
+            const song = window.songs.find(s => s.id === id);
+            if(!song) return;
+            window.editingSongId = id;
+            document.getElementById('songFormTitle').innerHTML = `Editando: ${song.titulo}`;
+            document.getElementById('newTitle').value = song.titulo;
+            document.getElementById('newRef').value = song.ref;
+            document.getElementById('newLink').value = song.link || '';
+            
+            const genresArr = getGenresArray(song.genero);
+            document.querySelectorAll('.song-moment-cb').forEach(cb => { cb.checked = genresArr.includes(cb.value); });
+            document.getElementById('saveSongBtn').innerText = "Guardar Cambios";
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+            document.getElementById('songFormSection').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window.cancelEditSong = () => {
+            window.editingSongId = null;
+            document.getElementById('songFormTitle').innerHTML = `Añadir Pieza al Catálogo`;
+            document.getElementById('newTitle').value = '';
+            document.getElementById('newRef').value = '';
+            document.getElementById('newLink').value = '';
+            document.querySelectorAll('.song-moment-cb').forEach(cb => cb.checked = false);
+            document.getElementById('saveSongBtn').innerText = "Añadir Pieza";
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+        };
+
+        window.deleteSong = async (id) => {
+            if(confirm("¿Eliminar pieza permanentemente?")) {
+                await deleteDoc(doc(db, "rlm_songs", id));
+            }
+        };
+
+        // --- Tab 3: Repertorios CRUD ---
+        window.renderRepertoiresAdmin = () => {
+            const list = document.getElementById('repertoiresAdminList');
+            list.innerHTML = window.repertoires.map(r => {
+                const dateObj = r.timestamp ? new Date(r.timestamp) : new Date();
+                const formattedDate = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                return `
+                <div class="grid grid-cols-12 gap-2 items-center bg-zinc-800/40 hover:bg-zinc-800/80 p-2.5 rounded-lg border border-white/5 transition-colors">
+                    <div class="col-span-3 min-w-0">
+                        <p class="text-xs font-bold text-neutral-200 truncate">${r.clientName || 'Sin Nombre'}</p>
+                        <p class="text-[9px] text-neutral-500 truncate">${r.clientPhone || 'Sin Teléfono'}</p>
+                    </div>
+                    <div class="col-span-3 min-w-0">
+                        <p class="text-[10px] text-amber-500 font-bold truncate">${r.eventType || 'No esp.'}</p>
+                        <p class="text-[9px] text-neutral-300 truncate">${r.clientDate || 'Sin fecha'}</p>
+                    </div>
+                    <div class="col-span-3">
+                        <span class="text-xs font-mono font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded">${r.songs?.length || 0} piezas</span>
+                        <p class="text-[8px] text-neutral-500 mt-0.5">${formattedDate}</p>
+                    </div>
+                    <div class="col-span-3 flex justify-end gap-1">
+                        <button onclick="window.viewRepertoire('${r.id}')" class="text-blue-400 hover:bg-blue-400/20 p-1.5 rounded transition-colors" title="Ver lista"><i data-lucide="eye" class="w-3.5 h-3.5"></i></button>
+                        <button onclick="window.deleteRepertoire('${r.id}')" class="text-red-400 hover:bg-red-400/20 p-1.5 rounded transition-colors" title="Eliminar"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                    </div>
+                </div>
+            `}).join('');
+            if(window.lucide) window.lucide.createIcons();
+        };
+
+        window.viewRepertoire = (id) => {
+            const rep = window.repertoires.find(r => r.id === id);
+            if(!rep) return;
+            const songList = rep.songs.map((s, i) => `${i+1}. ${s.titulo} ${s.isCustom ? '(Especial)' : ''}`).join('\n');
+            alert(`--- ${rep.eventType} de ${rep.clientName || 'Sin Nombre'} ---\nTel: ${rep.clientPhone || 'N/A'}\nFecha: ${rep.clientDate || 'N/A'}\nComentarios: ${rep.comments || 'N/A'}\n\nPiezas elegidas:\n${songList}`);
+        };
+
+        window.deleteRepertoire = async (id) => {
+            if(confirm("¿Seguro que deseas eliminar este repertorio?")) await deleteDoc(doc(db, "rlm_repertoires", id));
+        };
+
+        window.exportRepertoiresCSV = () => {
+            let csvContent = "Cliente,Telefono,Tipo de Evento,Fecha Evento,Comentarios,Fecha Registro,Canciones\n";
+            window.repertoires.forEach(r => {
+                const songsList = (r.songs || []).map(s => s.titulo).join(" | ");
+                csvContent += `${escapeCSV(r.clientName)},${escapeCSV(r.clientPhone)},${escapeCSV(r.eventType)},${escapeCSV(r.clientDate)},${escapeCSV(r.comments)},${escapeCSV(r.timestamp)},${escapeCSV(songsList)}\n`;
+            });
             const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.setAttribute("href", url);
-            link.setAttribute("download", "Repertorio_Rolando_Admin.csv");
+            link.setAttribute("download", "Registros_Repertorios_RLM.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        // --- Tab 4: Estadísticas (Chart.js) ---
+        window.renderCharts = () => {
+            // 1. Chart: Canciones por Momento (Doughnut)
+            const momentCounts = {};
+            window.activeMoments.forEach(m => momentCounts[m] = 0);
+            momentCounts["General / Otros"] = 0;
+
+            window.songs.forEach(s => {
+                const genresArr = getGenresArray(s.genero);
+                if (genresArr.length === 0) momentCounts["General / Otros"]++;
+                genresArr.forEach(g => {
+                    if (momentCounts[g] !== undefined) momentCounts[g]++;
+                    else momentCounts["General / Otros"]++;
+                });
+            });
+
+            if(chartInstanceMoments) chartInstanceMoments.destroy();
+            const ctxMoments = document.getElementById('chartMoments').getContext('2d');
+            chartInstanceMoments = new Chart(ctxMoments, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(momentCounts).filter(k => momentCounts[k] > 0),
+                    datasets: [{
+                        data: Object.values(momentCounts).filter(v => v > 0),
+                        backgroundColor: ['#d4af37', '#fbe599', '#9ca3af', '#52525b', '#27272a', '#18181b', '#ffffff'],
+                        borderWidth: 1, borderColor: '#09090b'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#e5e5e5', font: {size: 10} } } } }
+            });
+
+            // 2. Chart: Top 10 Canciones (Bar)
+            const topSongs = [...window.songs].sort((a, b) => (b.clicks || 0) - (a.clicks || 0)).slice(0, 10);
+            
+            if(chartInstanceClicks) chartInstanceClicks.destroy();
+            const ctxClicks = document.getElementById('chartClicks').getContext('2d');
+            chartInstanceClicks = new Chart(ctxClicks, {
+                type: 'bar',
+                data: {
+                    labels: topSongs.map(s => s.titulo.length > 15 ? s.titulo.substring(0,15)+'...' : s.titulo),
+                    datasets: [{
+                        label: 'Veces Solicitada',
+                        data: topSongs.map(s => s.clicks || 0),
+                        backgroundColor: '#d4af37',
+                        borderRadius: 4
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: '#9ca3af' } }, x: { ticks: { color: '#9ca3af', maxRotation: 45, minRotation: 45 } } }, plugins: { legend: { display: false } } }
+            });
+
+            // 3. Chart: Repertorios por Fecha (Line)
+            const dateCounts = {};
+            window.repertoires.forEach(r => {
+                if(!r.timestamp) return;
+                const d = new Date(r.timestamp).toLocaleDateString('es-MX', { month: 'short', day: 'numeric' });
+                dateCounts[d] = (dateCounts[d] || 0) + 1;
+            });
+            // Sort dates logically
+            const sortedDates = Object.keys(dateCounts).sort((a,b) => new Date(a) - new Date(b));
+
+            if(chartInstanceRepertoires) chartInstanceRepertoires.destroy();
+            const ctxReps = document.getElementById('chartRepertoires').getContext('2d');
+            chartInstanceRepertoires = new Chart(ctxReps, {
+                type: 'line',
+                data: {
+                    labels: sortedDates,
+                    datasets: [{
+                        label: 'Repertorios Generados',
+                        data: sortedDates.map(d => dateCounts[d]),
+                        borderColor: '#d4af37', backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                        fill: true, tension: 0.3, pointBackgroundColor: '#ffffff'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: '#9ca3af', stepSize: 1 } }, x: { ticks: { color: '#9ca3af' } } }, plugins: { legend: { display: false } } }
+            });
+        };
+
+        // --- CSV Export (Catálogo) ---
+        const escapeCSV = (str) => `"${(str || '').toString().replace(/"/g, '""')}"`;
+        window.exportCSV = () => {
+            let csvContent = "Titulo,Referencia,Momentos,Enlace,Solicitudes(Clics)\n";
+            window.songs.forEach(s => {
+                const genresArr = getGenresArray(s.genero);
+                csvContent += `${escapeCSV(s.titulo)},${escapeCSV(s.ref)},${escapeCSV(genresArr.join(' | '))},${escapeCSV(s.link)},${s.clicks || 0}\n`;
+            });
+            const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "Repertorio_Rolando_Admin_Stats.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -784,16 +1227,8 @@
             let ret = [], inQuote = false, value = '';
             for (let i = 0; i < text.length; i++) {
                 let char = text[i];
-                if (inQuote) {
-                    if (char === '"') {
-                        if (i < text.length - 1 && text[i+1] === '"') { value += '"'; i++; } 
-                        else inQuote = false;
-                    } else value += char;
-                } else {
-                    if (char === '"') inQuote = true;
-                    else if (char === ',') { ret.push(value.trim()); value = ''; }
-                    else value += char;
-                }
+                if (inQuote) { if (char === '"') { if (i < text.length - 1 && text[i+1] === '"') { value += '"'; i++; } else inQuote = false; } else value += char; } 
+                else { if (char === '"') inQuote = true; else if (char === ',') { ret.push(value.trim()); value = ''; } else value += char; }
             }
             ret.push(value.trim());
             return ret;
@@ -802,58 +1237,40 @@
         window.importCSV = async (event) => {
             const file = event.target.files[0];
             if (!file) return;
-            
             const reader = new FileReader();
             reader.onload = async function(e) {
                 const text = e.target.result;
                 const rows = text.split(/\r?\n/);
                 let addedCount = 0;
                 
-                const replaceAll = confirm(`Se ha cargado el archivo CSV. \n\n¿Deseas reemplazar todo el catálogo actual?\n(Aceptar = Reemplazar / Cancelar = Conservar existentes y añadir las nuevas)`);
-
-                if (replaceAll) {
-                    // Borrar existentes
-                    for (const s of window.songs) {
-                        await deleteDoc(doc(db, "rlm_songs", s.id));
-                    }
-                }
+                const replaceAll = confirm(`Se cargó el CSV. \n\n¿Deseas reemplazar todo el catálogo actual?\n(Aceptar = Borrar base actual y reemplazar / Cancelar = Sólo añadir nuevas)`);
+                if (replaceAll) for (const s of window.songs) await deleteDoc(doc(db, "rlm_songs", s.id));
                 
                 for (let i = 1; i < rows.length; i++) {
                     if (!rows[i].trim()) continue;
-                    
                     const cols = parseCSVLine(rows[i]);
                     if(cols.length >= 3 && cols[0]) {
+                        const momentsFromCSV = cols[2].split('|').map(m => m.trim()).filter(m => m);
                         await addDoc(collection(db, "rlm_songs"), {
-                            titulo: cols[0],
-                            ref: cols[1],
-                            genero: cols[2],
-                            link: cols[3] || ""
+                            titulo: cols[0], ref: cols[1], genero: momentsFromCSV.length > 0 ? momentsFromCSV : ["General"], link: cols[3] || "", clicks: parseInt(cols[4]) || 0
                         });
                         addedCount++;
+                        momentsFromCSV.forEach(m => {
+                            if(!window.activeMoments.includes(m)) { window.activeMoments.push(m); setDoc(doc(db, "rlm_settings", "moments"), { list: window.activeMoments }); }
+                        });
                     }
                 }
-                
-                if(addedCount > 0) {
-                    alert(`¡Catálogo importado con éxito! Se añadieron ${addedCount} piezas a Firebase.`);
-                } else {
-                    alert("No se encontraron piezas válidas en el CSV.");
-                }
-                
+                alert(`¡Éxito! Se importaron ${addedCount} piezas.`);
                 event.target.value = '';
             };
             reader.readAsText(file);
         };
 
-        // --- Event Listeners ---
+        // --- Listeners ---
         document.getElementById('searchInput').addEventListener('input', window.renderGrid);
         document.getElementById('genreFilter').addEventListener('change', window.renderGrid);
-        
-        document.getElementById('adminPass').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') window.checkAdminPass();
-        });
-        document.getElementById('customSongInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') window.addCustomSong();
-        });
+        document.getElementById('adminPass').addEventListener('keypress', function (e) { if (e.key === 'Enter') window.checkAdminPass(); });
+        document.getElementById('customSongInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') window.addCustomSong(); });
     </script>
 </body>
 </html>
